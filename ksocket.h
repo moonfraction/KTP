@@ -4,6 +4,13 @@ Name: Chandransh Singh
 Roll number: 22CS30017
 =====================================*/
 
+// steps to run the code
+/*
+make all
+./user2  ## run this in one terminal -> receiver
+./user1  ## run this in another terminal -> sender
+*/
+
 
 #ifndef KSOCKET_H
 #define KSOCKET_H
