@@ -1,0 +1,19 @@
+CC = gcc
+CFLAGS = -Wall -g -pthread
+TARGET = initksocket
+SRCS = initksocket.c
+OBJS = $(SRCS:.c=.o)
+LIBS = -L. -lksocket -pthread
+
+all: $(TARGET)
+
+$(TARGET): $(OBJS) libksocket.a
+	$(CC) $(CFLAGS) -o $@ $(OBJS) $(LIBS)
+
+%.o: %.c ksocket.h
+	$(CC) $(CFLAGS) -c $< -o $@
+
+clean:
+	rm -f $(OBJS) $(TARGET)
+
+.PHONY: all clean
