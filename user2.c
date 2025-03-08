@@ -34,126 +34,126 @@ void display_progress_bar(long current_bytes, long total_bytes);
  /******************************************************************************/
  /*                             MAIN FUNCTION                                  */
  /******************************************************************************/
- 
- int main(int argc, char *argv[]) {
-     char *filename, *src_ip, *dst_ip;
-     int src_port, dst_port;
-     int sockfd = -1;
-     FILE *output_file = NULL;
-     bool success = false;
-     
-     /*-------------------------------------------------------------------------
-      * Setup phase
-      *-------------------------------------------------------------------------*/
-     
-     /* Parse command line arguments */
-     if (!parse_arguments(argc, argv, &filename, &src_ip, &src_port, &dst_ip, &dst_port)) {
-         return EXIT_FAILURE;
-     }
-     
-     /* Create KTP socket */
-     sockfd = k_socket(AF_INET, SOCK_KTP, 0);
-     if (sockfd < 0) {
-         fprintf(stderr, "ERROR: Failed to create KTP socket: %s\n", strerror(errno));
-         return EXIT_FAILURE;
-     }
-     printf("✓ KTP socket created with descriptor: %d\n", sockfd);
-     
-     /* Bind socket to network addresses */
-     if (k_bind(sockfd, src_ip, src_port, dst_ip, dst_port) < 0) {
-         fprintf(stderr, "ERROR: Failed to bind KTP socket: %s\n", strerror(errno));
-         goto cleanup;
-     }
-     printf("✓ Socket bound to %s:%d → %s:%d\n", src_ip, src_port, dst_ip, dst_port);
-     
-     /* Short delay to ensure binding is complete */
-     usleep(500000);  /* 500ms */
-     
-     /*-------------------------------------------------------------------------
-      * Transfer phase
-      *-------------------------------------------------------------------------*/
-     
-     /* Source address structure for receive operations */
-     struct sockaddr_in src_addr;
-     
-     /* Receive expected file size */
-     long file_size = receive_file_size(sockfd, &src_addr);
-     if (file_size <= 0) {
-         fprintf(stderr, "ERROR: Failed to receive valid file size\n");
-         goto cleanup;
-     }
-     printf("✓ File size metadata received: %ld bytes\n", file_size);
-     
-     /* Create output file */
-     output_file = fopen(filename, "wb");
-     if (!output_file) {
-         fprintf(stderr, "ERROR: Failed to create output file '%s': %s\n", 
-                 filename, strerror(errno));
-         goto cleanup;
-     }
-     
-     /* Receive and save file data */
-     if (!receive_file_data(sockfd, output_file, file_size)) {
-         fprintf(stderr, "ERROR: File transfer failed or was incomplete\n");
-         goto cleanup;
-     }
-     
-     /* Success */
-     printf("✓ File '%s' received successfully\n", filename);
-     success = true;
- 
- cleanup:
-     /* Release resources */
-     printf("Cleaning up resources...\n");
-     if (sockfd >= 0) {
-         k_close(sockfd);
-     }
-     if (output_file) {
-         fclose(output_file);
-     }
-     
-     return success ? EXIT_SUCCESS : EXIT_FAILURE;
- }
- 
- /******************************************************************************/
- /*                            HELPER FUNCTIONS                                */
- /******************************************************************************/
- 
- /**
-  * Parse command line arguments
-  *
-  * @param argc      Argument count
-  * @param argv      Argument values
-  * @param filename  Output parameter for filename
-  * @param src_ip    Output parameter for source IP
-  * @param src_port  Output parameter for source port
-  * @param dst_ip    Output parameter for destination IP
-  * @param dst_port  Output parameter for destination port
-  * @return true if arguments are valid, false otherwise
-  */
- bool parse_arguments(int argc, char *argv[], 
-                     char **filename, char **src_ip, int *src_port,
-                     char **dst_ip, int *dst_port) {
-     if (argc != 6) {
-         fprintf(stderr, "Usage: %s <output_filename> <src_ip> <src_port> <dst_ip> <dst_port>\n", argv[0]);
-         return false;
-     }
- 
-     *filename = argv[1];
-     *src_ip = argv[2];
-     *src_port = atoi(argv[3]);
-     *dst_ip = argv[4];
-     *dst_port = atoi(argv[5]);
-     
-     /* Validate ports */
-     if (*src_port <= 0 || *src_port > 65535 || *dst_port <= 0 || *dst_port > 65535) {
-         fprintf(stderr, "ERROR: Port numbers must be between 1 and 65535\n");
-         return false;
-     }
-     
-     return true;
- }
- 
+
+int main(int argc, char *argv[]) {
+    char *filename, *src_ip, *dst_ip;
+    int src_port, dst_port;
+    int sockfd = -1;
+    FILE *output_file = NULL;
+    bool success = false;
+    
+    /*-------------------------------------------------------------------------
+    * Setup phase
+    *-------------------------------------------------------------------------*/
+    
+    /* Parse command line arguments */
+    if (!parse_arguments(argc, argv, &filename, &src_ip, &src_port, &dst_ip, &dst_port)) {
+        return EXIT_FAILURE;
+    }
+    
+    /* Create KTP socket */
+    sockfd = k_socket(AF_INET, SOCK_KTP, 0);
+    if (sockfd < 0) {
+        fprintf(stderr, "ERROR: Failed to create KTP socket: %s\n", strerror(errno));
+        return EXIT_FAILURE;
+    }
+    printf("✓ KTP socket created with descriptor: %d\n", sockfd);
+    
+    /* Bind socket to network addresses */
+    if (k_bind(sockfd, src_ip, src_port, dst_ip, dst_port) < 0) {
+        fprintf(stderr, "ERROR: Failed to bind KTP socket: %s\n", strerror(errno));
+        goto cleanup;
+    }
+    printf("✓ Socket bound to %s:%d → %s:%d\n", src_ip, src_port, dst_ip, dst_port);
+    
+    /* Short delay to ensure binding is complete */
+    usleep(500000);  /* 500ms */
+    
+    /*-------------------------------------------------------------------------
+    * Transfer phase
+    *-------------------------------------------------------------------------*/
+    
+    /* Source address structure for receive operations */
+    struct sockaddr_in src_addr;
+    
+    /* Receive expected file size */
+    long file_size = receive_file_size(sockfd, &src_addr);
+    if (file_size <= 0) {
+        fprintf(stderr, "ERROR: Failed to receive valid file size\n");
+        goto cleanup;
+    }
+    printf("✓ File size metadata received: %ld bytes\n", file_size);
+    
+    /* Create output file */
+    output_file = fopen(filename, "wb");
+    if (!output_file) {
+        fprintf(stderr, "ERROR: Failed to create output file '%s': %s\n", 
+                filename, strerror(errno));
+        goto cleanup;
+    }
+    
+    /* Receive and save file data */
+    if (!receive_file_data(sockfd, output_file, file_size)) {
+        fprintf(stderr, "ERROR: File transfer failed or was incomplete\n");
+        goto cleanup;
+    }
+    
+    /* Success */
+    printf("✓ File '%s' received successfully\n", filename);
+    success = true;
+
+cleanup:
+    /* Release resources */
+    printf("Cleaning up resources...\n");
+    if (sockfd >= 0) {
+        k_close(sockfd);
+    }
+    if (output_file) {
+        fclose(output_file);
+    }
+    
+    return success ? EXIT_SUCCESS : EXIT_FAILURE;
+}
+
+/******************************************************************************/
+/*                            HELPER FUNCTIONS                                */
+/******************************************************************************/
+
+/**
+ * Parse command line arguments
+ *
+ * @param argc      Argument count
+ * @param argv      Argument values
+ * @param filename  Output parameter for filename
+ * @param src_ip    Output parameter for source IP
+ * @param src_port  Output parameter for source port
+ * @param dst_ip    Output parameter for destination IP
+ * @param dst_port  Output parameter for destination port
+ * @return true if arguments are valid, false otherwise
+ */
+bool parse_arguments(int argc, char *argv[], 
+                    char **filename, char **src_ip, int *src_port,
+                    char **dst_ip, int *dst_port) {
+    if (argc != 6) {
+        fprintf(stderr, "Usage: %s <src_ip> <src_port> <dst_ip> <dst_port> <output_file>\n", argv[0]);
+        return false;
+    }
+
+    *src_ip = argv[1];
+    *src_port = atoi(argv[2]);
+    *dst_ip = argv[3];
+    *dst_port = atoi(argv[4]);
+    *filename = argv[5];
+    
+    /* Validate ports */
+    if (*src_port <= 0 || *src_port > 65535 || *dst_port <= 0 || *dst_port > 65535) {
+        fprintf(stderr, "ERROR: Port numbers must be between 1 and 65535\n");
+        return false;
+    }
+    
+    return true;
+}
+
  
 /**
  * Receive file size metadata from sender
