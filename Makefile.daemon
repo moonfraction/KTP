@@ -1,5 +1,7 @@
+# Daemon Makefile - builds the KTP socket daemon
+
 CC = gcc
-CFLAGS = -Wall -g -pthread
+CFLAGS = -Wall -pthread
 TARGET = initksocket
 SRCS = initksocket.c
 OBJS = $(SRCS:.c=.o)

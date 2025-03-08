@@ -1,145 +1,188 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
-#include "ksocket.h"
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include <errno.h>
+/**
+ * KTP Protocol File Sender Application
+ * 
+ * Sends a file over the network using the KTP protocol
+ */
 
-#define BUFFER_SIZE MSG_SIZE
-
-int main(int argc, char *argv[]) {
-    if (argc != 6) {
-        fprintf(stderr, "Usage: %s <filename> <src_ip> <src_port> <dst_ip> <dst_port>\n", argv[0]);
-        return 1;
-    }
-
-    const char *filename = argv[1];
-    const char *src_ip = argv[2];
-    int src_port = atoi(argv[3]);
-    const char *dst_ip = argv[4];
-    int dst_port = atoi(argv[5]);
-
-    // Open the file to be sent
-    FILE *file = fopen(filename, "rb");
-    if (file == NULL) {
-        perror("Failed to open file");
-        return 1;
-    }
-
-    // Get file size
-    fseek(file, 0, SEEK_END);
-    long file_size = ftell(file);
-    fseek(file, 0, SEEK_SET);
-    printf("File size: %ld bytes\n", file_size);
-
-    // Create a KTP socket
-    int sockfd = k_socket(AF_INET, SOCK_KTP, 0);
-    if (sockfd < 0) {
-        perror("Failed to create KTP socket");
-        fclose(file);
-        return 1;
-    }
-    printf("KTP socket created: %d\n", sockfd);
-
-    // Bind the socket
-    if (k_bind(sockfd, src_ip, src_port, dst_ip, dst_port) < 0) {
-        perror("Failed to bind KTP socket");
-        k_close(sockfd);
-        fclose(file);
-        return 1;
-    }
-    printf("KTP socket bound to %s:%d -> %s:%d\n", src_ip, src_port, dst_ip, dst_port);
-
-    // Prepare destination address
-    struct sockaddr_in dest_addr;
-    memset(&dest_addr, 0, sizeof(dest_addr));
-    dest_addr.sin_family = AF_INET;
-    dest_addr.sin_port = htons(dst_port);
-    inet_pton(AF_INET, dst_ip, &dest_addr.sin_addr);
-
-    // Send file size first so receiver knows how much data to expect
-    char size_buffer[32];
-    snprintf(size_buffer, sizeof(size_buffer), "%ld", file_size);
-    
-    if (k_sendto(sockfd, size_buffer, strlen(size_buffer), 0, 
-                (struct sockaddr *)&dest_addr, sizeof(dest_addr)) < 0) {
-        perror("Failed to send file size");
-        k_close(sockfd);
-        fclose(file);
-        return 1;
-    }
-    printf("Sent file size: %ld bytes\n", file_size);
-    
-    // Give receiver time to process the file size
-    sleep(1);  // Wait 1 second
-
-    // Send the file contents
-    char buffer[BUFFER_SIZE];
-    size_t total_sent = 0;
-    size_t bytes_read;
-    int packet_count = 0;
-
-    while ((bytes_read = fread(buffer, 1, BUFFER_SIZE, file)) > 0) {
-        // Keep trying to send the current buffer until successful
-        ssize_t bytes_sent = -1;
-        int retry_count = 0;
-        
-        while (bytes_sent < 0 && retry_count < 100) {
-            bytes_sent = k_sendto(sockfd, buffer, bytes_read, 0, 
-                        (struct sockaddr *)&dest_addr, sizeof(dest_addr));
-            
-            if (bytes_sent < 0) {
-                // Check for ENOSPACE error and retry
-                if (errno == ENOSPACE) {
-                    if (retry_count == 0) {
-                        printf("Send buffer full, waiting...\n");
-                    }
-                    usleep(100000);  // Wait 100ms
-                    retry_count++;
-                } else {
-                    perror("Failed to send data");
-                    k_close(sockfd);
-                    fclose(file);
-                    return 1;
-                }
-            }
-        }
-        
-        // If we couldn't send after multiple retries
-        if (bytes_sent < 0) {
-            fprintf(stderr, "Failed to send data after multiple attempts\n");
-            k_close(sockfd);
-            fclose(file);
-            return 1;
-        }
-        
-        total_sent += bytes_sent;
-        packet_count++;
-        
-        // Print progress every 10 packets
-        if (packet_count % 10 == 0) {
-            printf("Progress: %ld/%ld bytes (%.1f%%)\n", 
-                  total_sent, file_size, 
-                  (float)total_sent / file_size * 100);
-        }
-        
-        // Throttle sending rate to avoid overwhelming the buffer
-        usleep(10000);  // 10ms delay
-    }
-
-    printf("File transfer complete. Sent %ld bytes in %d packets.\n", 
-           total_sent, packet_count);
-
-    // Wait to ensure all data is transmitted
-    printf("Waiting to ensure all data is delivered...\n");
-    sleep(10);  // Wait 10 seconds
-
-    // Close resources
-    k_close(sockfd);
-    fclose(file);
-    
-    return 0;
-}
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <string.h>
+ #include <unistd.h>
+ #include <errno.h>
+ #include <sys/socket.h>
+ #include <netinet/in.h>
+ #include <arpa/inet.h>
+ #include "ksocket.h"
+ 
+ /* Constants */
+ #define APP_BUFFER_SIZE KTP_MSG_SIZE
+ #define PROGRESS_INTERVAL 5     /* Print progress every N packets */
+ #define PACKET_DELAY_US 1000    /* Microseconds between packet sends */
+ #define BUFFER_FULL_DELAY_US 10000 /* Retry delay when buffer is full */
+ #define SIZE_WAIT_TIME_US 500000  /* Wait after sending file size */
+ #define TRANSFER_COMPLETE_WAIT_S 30 /* Time to wait after transfer completes */
+ 
+ /**
+  * Main entry point for file sender application
+  * 
+  * @param argc  Argument count
+  * @param argv  Command line arguments
+  * @return      Exit status (0 on success)
+  */
+ int main(int argc, char *argv[]) {
+     /* Validate command line arguments */
+     if (argc != 6) {
+         fprintf(stderr, "Usage: %s <filename> <src_ip> <src_port> <dst_ip> <dst_port>\n", argv[0]);
+         return EXIT_FAILURE;
+     }
+ 
+     const char *filename = argv[1];
+     const char *src_ip = argv[2];
+     int src_port = atoi(argv[3]);
+     const char *dst_ip = argv[4];
+     int dst_port = atoi(argv[5]);
+ 
+     /* Open source file */
+     FILE *file = fopen(filename, "rb");
+     if (!file) {
+         perror("Failed to open file");
+         return EXIT_FAILURE;
+     }
+ 
+     /* Get file size */
+     fseek(file, 0, SEEK_END);
+     long file_size = ftell(file);
+     fseek(file, 0, SEEK_SET);
+     printf("File size: %ld bytes\n", file_size);
+ 
+     /* Create KTP socket */
+     int sockfd = k_socket(AF_INET, SOCK_KTP, 0);
+     if (sockfd < 0) {
+         perror("KTP socket creation failed");
+         fclose(file);
+         return EXIT_FAILURE;
+     }
+     printf("KTP socket created: %d\n", sockfd);
+ 
+     /* Bind socket to addresses */
+     if (k_bind(sockfd, src_ip, src_port, dst_ip, dst_port) < 0) {
+         perror("KTP socket binding failed");
+         k_close(sockfd);
+         fclose(file);
+         return EXIT_FAILURE;
+     }
+     printf("KTP socket bound to %s:%d -> %s:%d\n", src_ip, src_port, dst_ip, dst_port);
+ 
+     /* Configure destination address */
+     struct sockaddr_in dest_addr;
+     memset(&dest_addr, 0, sizeof(dest_addr));
+     dest_addr.sin_family = AF_INET;
+     dest_addr.sin_port = htons(dst_port);
+     if (inet_pton(AF_INET, dst_ip, &dest_addr.sin_addr) <= 0) {
+         perror("Invalid destination IP address");
+         k_close(sockfd);
+         fclose(file);
+         return EXIT_FAILURE;
+     }
+ 
+     /* Send file size as metadata first */
+     char size_buffer[32];
+     snprintf(size_buffer, sizeof(size_buffer), "%ld", file_size);
+     
+     if (k_sendto(sockfd, size_buffer, strlen(size_buffer) + 1, 0, 
+                 (struct sockaddr *)&dest_addr, sizeof(dest_addr)) < 0) {
+         perror("Failed to send file size metadata");
+         k_close(sockfd);
+         fclose(file);
+         return EXIT_FAILURE;
+     }
+     printf("Sent file size metadata: %ld bytes\n", file_size);
+     
+     /* Brief pause to ensure receiver processes the file size */
+     usleep(SIZE_WAIT_TIME_US);
+ 
+     /* Transfer the file */
+     char buffer[APP_BUFFER_SIZE];
+     size_t total_sent = 0;
+     size_t bytes_read;
+     int packet_count = 0;
+     int retry_count = 0;
+ 
+     /* Main transfer loop */
+     while ((bytes_read = fread(buffer, 1, APP_BUFFER_SIZE - 1, file)) > 0) {
+         /* Null-terminate the buffer for safe string handling */
+         buffer[bytes_read] = '\0';
+         
+         /* Transmission state */
+         ssize_t bytes_sent = -1;
+         int retry_notification_shown = 0;
+         
+         printf("Sending packet #%d (%ld bytes)...\n", packet_count + 1, bytes_read);
+ 
+         /* Keep trying until packet is sent or fatal error occurs */
+         while (bytes_sent < 0) {
+             bytes_sent = k_sendto(sockfd, buffer, bytes_read + 1, 0, 
+                          (struct sockaddr *)&dest_addr, sizeof(dest_addr));
+             
+             if (bytes_sent < 0) {
+                 /* Handle send buffer full condition */
+                 if (errno == E_KTP_NO_SPACE) {
+                     retry_count++;
+                     
+                     /* Show notification only once per packet */
+                     if (!retry_notification_shown) {
+                         printf("Send buffer full, retrying (packet #%d)...\n", 
+                                packet_count + 1);
+                         retry_notification_shown = 1;
+                     }
+                     
+                     /* Wait before retry */
+                     usleep(BUFFER_FULL_DELAY_US);
+                 } else {
+                     /* Fatal error */
+                     perror("Fatal error sending data");
+                     break;
+                 }
+             }
+         }
+         
+         /* Check for transmission failure */
+         if (bytes_sent < 0) {
+             fprintf(stderr, "Transmission failed, aborting transfer\n");
+             break;
+         }
+         
+         /* Update statistics */
+         total_sent += bytes_sent - 1;  /* Subtract null terminator */
+         packet_count++;
+         
+         /* Display progress at intervals */
+         if (packet_count % PROGRESS_INTERVAL == 0) {
+             float progress_pct = (float)total_sent / file_size * 100;
+             printf("Progress: %ld/%ld bytes (%.1f%%) - %d retries\n", 
+                    total_sent, file_size, progress_pct, retry_count);
+         }
+         
+         /* Brief pause between packets to prevent buffer overflow */
+         usleep(PACKET_DELAY_US);
+     }
+ 
+     /* Transfer summary */
+     printf("\nFile transfer summary:\n");
+     printf("  - Filename: %s\n", filename);
+     printf("  - Total bytes sent: %ld/%ld\n", total_sent, file_size);
+     printf("  - Packets sent: %d\n", packet_count);
+     printf("  - Buffer full retries: %d\n", retry_count);
+     
+     /* Allow time for any in-flight packets to be delivered */
+     printf("\nWaiting %d seconds to ensure all data is delivered...\n", 
+            TRANSFER_COMPLETE_WAIT_S);
+     sleep(TRANSFER_COMPLETE_WAIT_S);
+ 
+     /* Cleanup resources */
+     printf("Closing connection and releasing resources\n");
+     k_close(sockfd);
+     fclose(file);
+     
+     return (total_sent == file_size) ? EXIT_SUCCESS : EXIT_FAILURE;
+ }

@@ -1,18 +1,21 @@
-all: library init users
+# Top-level Makefile for KTP Protocol
+# Builds library, daemon, and user applications
+
+all: library daemon applications
 
 library:
 	$(MAKE) -f Makefile.lib
 
-init: library
-	$(MAKE) -f Makefile.init
+daemon: library
+	$(MAKE) -f Makefile.daemon
 
-users: library
-	$(MAKE) -f Makefile.users
+applications: library
+	$(MAKE) -f Makefile.applications
 
 clean:
 	$(MAKE) -f Makefile.lib clean
-	$(MAKE) -f Makefile.init clean
-	$(MAKE) -f Makefile.users clean
-	rm -f debug*
+	$(MAKE) -f Makefile.daemon clean
+	$(MAKE) -f Makefile.applications clean
+	rm -f *.o *~
 
-.PHONY: all library init users clean
+.PHONY: all library daemon applications clean

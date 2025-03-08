@@ -1,0 +1,19 @@
+# Applications Makefile - builds sender and receiver applications
+
+CC = gcc
+CFLAGS = -Wall -pthread
+TARGETS = user1 user2
+LIBS = -L. -lksocket -pthread
+
+all: $(TARGETS)
+
+user1: user1.c libksocket.a
+	$(CC) $(CFLAGS) -o $@ $< $(LIBS)
+
+user2: user2.c libksocket.a
+	$(CC) $(CFLAGS) -o $@ $< $(LIBS)
+
+clean:
+	rm -f $(TARGETS)
+
+.PHONY: all clean
