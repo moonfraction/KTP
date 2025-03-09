@@ -1,5 +1,8 @@
-KTP Protocol: Process 48254 [socket 0] (UDP fd: 3)
-✓ KTP socket created with descriptor: 0
+KTP: Successfully connected to socket memory array
+KTP: Created scoket 9 for process 79300 [UDP socket: 12]
+✓ KTP socket created with descriptor: 9
+KTP: Requesting binding for Socket 9 (127.0.0.1:5055 → 127.0.0.1:5056)
+KTP: Socket 9 successfully bound
 ✓ Socket bound to 127.0.0.1:5055 → 127.0.0.1:5056
 Waiting for file size metadata...
 ✓ File size metadata received: 105334 bytes
@@ -49,6 +52,8 @@ Waiting for file size metadata...
 ▕█████████████████████████████████████████████████░▏ 99.5% (104755 bytes)
 ▕██████████████████████████████████████████████████▏ 100.0% (105334 bytes)
 
+ Transfer complete! Final status:
+
 ┌─────────────────────────────────────────────────┐
 │             TRANSFER STATISTICS                 │
 ├─────────────────────────────────────────────────┤
@@ -57,5 +62,5 @@ Waiting for file size metadata...
 │ Received packets:     207                       │
 │ Average packet size:  508.9                     │
 └─────────────────────────────────────────────────┘
-✓ File 'output.txt' received successfully
+✓ File 'out.txt' received successfully
 Cleaning up resources...

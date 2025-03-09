@@ -269,6 +269,10 @@ bool receive_file_data(int sockfd, FILE *file, long expected_size) {
     // Ensure data is persisted
     fflush(file);
     
+    // Display final 100% progress bar
+    display_progress_bar(expected_size, expected_size);
+    printf("\n Transfer complete! Final status:\n");
+    
     // Final statistics display
     printf("\n┌─────────────────────────────────────────────────┐\n");
     printf("│             TRANSFER STATISTICS                 │\n");
