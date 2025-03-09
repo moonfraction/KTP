@@ -14,7 +14,8 @@
 - [7. THREAD ARCHITECTURE](#7-daemon-implementation)
 - [8. PROTOCOL OPERATION](#8-protocol-operation-details)
 - [9. PACKET TRANSMISSION STATISTICS](#9-packet-transmission-statistics)
-
+- [10. KTP PROTOCOL ARCHITECTURE OVERVIEW](#10-ktp-protocol-architecture-overview)
+- [11. RUNNING THE KTP PROTOCOL](#11-running-the-ktp-protocol)
 ---
 
 ## 1. PROTOCOL OVERVIEW
@@ -339,7 +340,6 @@ EINVAL, EBADF, ETIMEDOUT
 This protocol provides reliable, in-order message delivery despite network unreliability, enabling effective communication between distributed processes.
 
 
----
 
 ## 9. PACKET TRANSMISSION STATISTICS
 
@@ -361,6 +361,7 @@ This protocol provides reliable, in-order message delivery despite network unrel
 > 
 > Note: One additional packet was send for metadata
 
+## 10. KTP PROTOCOL ARCHITECTURE OVERVIEW
 
 ```plaintext
 ┌─────────────────┐          ┌─────────────────┐
@@ -385,4 +386,32 @@ This protocol provides reliable, in-order message delivery despite network unrel
 └───────────────────────────────────────────────┘
 ```
 
+## 11. Running the KTP Protocol  
 
+Follow these steps to run the KTP protocol for reliable file transfer:  
+
+1. **Compile the project**  
+   ```bash
+   make
+   ```  
+
+2. **Start the KTP daemon** in one terminal:  
+   ```bash
+   ./initksocket
+   ```  
+
+3. **Start the receiver (`user2`)** in another terminal:  
+   ```bash
+   ./user2 <src_ip> <src_port> <dst_ip> <dst_port> <output_filename>
+   ```  
+
+4. **Start the sender (`user1`)** in another terminal:  
+   ```bash
+   ./user1 <src_ip> <src_port> <dst_ip> <dst_port> <input_filename>
+   ```  
+
+5. **Wait for the file transfer to complete**  
+   - Monitor the `user2` terminal until the transfer finishes.  
+
+6. **Terminate the KTP daemon**  
+   - Once the transfer is complete, stop `initksocket` by pressing `Ctrl + C`

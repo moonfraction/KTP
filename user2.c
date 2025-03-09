@@ -44,12 +44,12 @@ int main(int argc, char *argv[]) {
     long file_size = 0;
     struct sockaddr_in src_addr;
     
-    // PHASE 1: Command line processing
+    // Command line processing
     if (parse_arguments(argc, argv, &filename, &src_ip, &src_port, &dst_ip, &dst_port) == false) {
         return EXIT_FAILURE;
     }
     
-    // PHASE 2: Network initialization
+    // Network initialization
     do {
         // Socket creation
         sockfd = k_socket(AF_INET, SOCK_KTP, 0);
@@ -69,7 +69,7 @@ int main(int argc, char *argv[]) {
         // Allow time for binding to complete
         usleep(500000);  // 500ms
         
-        // PHASE 3: Metadata exchange
+        // Metadata exchange
         file_size = receive_file_size(sockfd, &src_addr);
         if (file_size <= 0) {
             fprintf(stderr, "ERROR: Failed to receive valid file size\n");
@@ -77,7 +77,7 @@ int main(int argc, char *argv[]) {
         }
         printf("✓ File size metadata received: %ld bytes\n", file_size);
         
-        // PHASE 4: File creation
+        // File creation
         output_file = fopen(filename, "wb");
         if (!output_file) {
             fprintf(stderr, "ERROR: Failed to create output file '%s': %s\n", 
@@ -85,7 +85,7 @@ int main(int argc, char *argv[]) {
             break;
         }
         
-        // PHASE 5: Data reception
+        // Data reception
         if (receive_file_data(sockfd, output_file, file_size)) {
             printf("✓ File '%s' received successfully\n", filename);
             success = true;
@@ -94,7 +94,7 @@ int main(int argc, char *argv[]) {
         }
     } while (0);  // Non-looping do-while for structured error handling
     
-    // PHASE 6: Cleanup
+    // Cleanup
     printf("Cleaning up resources...\n");
     if (sockfd >= 0) k_close(sockfd);
     if (output_file) fclose(output_file);
