@@ -1,0 +1,1610 @@
+[0;35mKTP Manager: Created UDP socket 0 with descriptor 3
+[0;35mKTP Manager: Created UDP socket 1 with descriptor 4
+[0;35mKTP Manager: Created UDP socket 2 with descriptor 5
+[0;35mKTP Manager: Created UDP socket 3 with descriptor 6
+[0;35mKTP Manager: Created UDP socket 4 with descriptor 7
+[0;35mKTP Manager: Created UDP socket 5 with descriptor 8
+[0;35mKTP Manager: Created UDP socket 6 with descriptor 9
+[0;35mKTP Manager: Created UDP socket 7 with descriptor 10
+[0;35mKTP Manager: Created UDP socket 8 with descriptor 11
+[0;35mKTP Manager: Created UDP socket 9 with descriptor 12
+[0;35mKTP Manager: Memory segment initialized for 10 network sockets
+[0mKTP Receiver thread started
+[0mKTP Sender thread started
+[0;35mKTP Manager: Protocol service initialized. All threads active.
+[0mKTP Garbage collector thread started
+[0;32mKTP: Processing binding request for socket 0
+[0;32mKTP: Socket 0 bound successfully to network endpoint
+[0;32mKTP: Processing binding request for socket 1
+[0;32mKTP: Socket 1 bound successfully to network endpoint
+[0;36mKTP: Socket 1: New packet sent with sequence 1
+[0;36mKTP: Socket 1: New packet sent with sequence 2
+[0;36mKTP: Socket 1: New packet sent with sequence 3
+[0;36mKTP: Socket 1: New packet sent with sequence 4
+[0;36mKTP: Socket 1: New packet sent with sequence 5
+[0;32mKTP: Socket 0: Data packet received with seq=1
+[0;32mKTP: Socket 0: Sending ACK, last_ack=1, window=9
+[0;36mKTP: Socket 1: New packet sent with sequence 6
+[0;36mKTP: Socket 1: New packet sent with sequence 7
+[0;36mKTP: Socket 1: New packet sent with sequence 8
+[0;32mKTP: Socket 0: Data packet received with seq=2
+[0;36mKTP: Socket 1: New packet sent with sequence 9
+[0;32mKTP: Socket 0: Sending ACK, last_ack=2, window=8
+[0;36mKTP: Socket 1: New packet sent with sequence 10
+[0;32mKTP: Socket 0: Data packet received with seq=3
+[0;32mKTP: Socket 0: Sending ACK, last_ack=3, window=7
+[0;32mKTP: Socket 1: ACK received, last_ack=1, window=9
+[0;32mKTP: Socket 1: Processing ACK for 1 packets up to seq 1
+[0;32mKTP: Socket 1: Window advanced, base=2, unacked=9
+[0;31mKTP: Socket 0: Incoming packet deliberately dropped (simulated loss)
+[0;32mKTP: Socket 1: ACK received, last_ack=2, window=8
+[0;32mKTP: Socket 1: Processing ACK for 1 packets up to seq 2
+[0;32mKTP: Socket 1: Window advanced, base=3, unacked=8
+[0;32mKTP: Socket 0: Data packet received with seq=5
+[0;32mKTP: Socket 0: Sending ACK, last_ack=3, window=7
+[0;32mKTP: Socket 1: ACK received, last_ack=3, window=7
+[0;32mKTP: Socket 1: Processing ACK for 1 packets up to seq 3
+[0;32mKTP: Socket 1: Window advanced, base=4, unacked=7
+[0;32mKTP: Socket 0: Data packet received with seq=6
+[0;32mKTP: Socket 0: Sending ACK, last_ack=3, window=7
+[0;32mKTP: Socket 1: ACK received, last_ack=3, window=7
+[0;32mKTP: Socket 1: Duplicate ACK 3, updating window only
+[0;32mKTP: Socket 0: Data packet received with seq=7
+[0;32mKTP: Socket 0: Sending ACK, last_ack=3, window=7
+[0;32mKTP: Socket 1: ACK received, last_ack=3, window=7
+[0;32mKTP: Socket 1: Duplicate ACK 3, updating window only
+[0;32mKTP: Socket 0: Data packet received with seq=8
+[0;32mKTP: Socket 0: Sending ACK, last_ack=3, window=7
+[0;32mKTP: Socket 1: ACK received, last_ack=3, window=7
+[0;32mKTP: Socket 1: Duplicate ACK 3, updating window only
+[0;32mKTP: Socket 0: Data packet received with seq=9
+[0;32mKTP: Socket 0: Sending ACK, last_ack=3, window=7
+[0;32mKTP: Socket 1: ACK received, last_ack=3, window=7
+[0;32mKTP: Socket 1: Duplicate ACK 3, updating window only
+[0;32mKTP: Socket 0: Data packet received with seq=10
+[0;32mKTP: Socket 0: Sending ACK, last_ack=3, window=7
+[0;32mKTP: Socket 1: ACK received, last_ack=3, window=7
+[0;32mKTP: Socket 1: Duplicate ACK 3, updating window only
+[0;31mKTP: Socket 1: Incoming packet deliberately dropped (simulated loss)
+[0;36mKTP: Socket 1: Timeout detected, retransmitting 7 pending packets
+[0;32mKTP: Socket 0: Data packet received with seq=4
+[0;32mKTP: Socket 0: Sending ACK, last_ack=10, window=3
+[0;32mKTP: Socket 0: Data packet received with seq=5
+[0;32mKTP: Socket 0: Sending ACK for duplicate packet, last_ack=10
+[0;32mKTP: Socket 1: ACK received, last_ack=10, window=3
+[0;32mKTP: Socket 1: Processing ACK for 7 packets up to seq 10
+[0;32mKTP: Socket 1: Window advanced, base=1, unacked=0
+[0;32mKTP: Socket 0: Data packet received with seq=6
+[0;32mKTP: Socket 0: Sending ACK for duplicate packet, last_ack=10
+[0;32mKTP: Socket 1: ACK received, last_ack=10, window=3
+[0;32mKTP: Socket 1: Duplicate ACK 10, updating window only
+[0;32mKTP: Socket 0: Data packet received with seq=7
+[0;32mKTP: Socket 0: Sending ACK for duplicate packet, last_ack=10
+[0;32mKTP: Socket 1: ACK received, last_ack=10, window=3
+[0;32mKTP: Socket 1: Duplicate ACK 10, updating window only
+[0;32mKTP: Socket 0: Data packet received with seq=8
+[0;32mKTP: Socket 0: Sending ACK for duplicate packet, last_ack=10
+[0;32mKTP: Socket 1: ACK received, last_ack=10, window=3
+[0;32mKTP: Socket 1: Duplicate ACK 10, updating window only
+[0;32mKTP: Socket 0: Data packet received with seq=9
+[0;32mKTP: Socket 0: Sending ACK for duplicate packet, last_ack=10
+[0;31mKTP: Socket 1: Incoming packet deliberately dropped (simulated loss)
+[0;32mKTP: Socket 0: Data packet received with seq=10
+[0;32mKTP: Socket 0: Sending ACK for duplicate packet, last_ack=10
+[0;32mKTP: Socket 1: ACK received, last_ack=10, window=3
+[0;32mKTP: Socket 1: Duplicate ACK 10, updating window only
+[0;32mKTP: Socket 1: ACK received, last_ack=10, window=3
+[0;32mKTP: Socket 1: Duplicate ACK 10, updating window only
+[0;36mKTP: Socket 1: New packet sent with sequence 11
+[0;36mKTP: Socket 1: New packet sent with sequence 12
+[0;36mKTP: Socket 1: New packet sent with sequence 13
+[0;32mKTP: Socket 0: Data packet received with seq=11
+[0;32mKTP: Socket 0: Sending ACK, last_ack=11, window=9
+[0;32mKTP: Socket 0: Data packet received with seq=12
+[0;32mKTP: Socket 0: Sending ACK, last_ack=12, window=8
+[0;32mKTP: Socket 1: ACK received, last_ack=11, window=9
+[0;32mKTP: Socket 1: Processing ACK for 1 packets up to seq 11
+[0;32mKTP: Socket 1: Window advanced, base=2, unacked=2
+[0;32mKTP: Socket 0: Data packet received with seq=13
+[0;32mKTP: Socket 0: Sending ACK, last_ack=13, window=7
+[0;31mKTP: Socket 1: Incoming packet deliberately dropped (simulated loss)
+[0;32mKTP: Socket 1: ACK received, last_ack=13, window=7
+[0;32mKTP: Socket 1: Processing ACK for 2 packets up to seq 13
+[0;32mKTP: Socket 1: Window advanced, base=4, unacked=0
+[0;36mKTP: Socket 1: New packet sent with sequence 14
+[0;36mKTP: Socket 1: New packet sent with sequence 15
+[0;32mKTP: Socket 0: Data packet received with seq=14
+[0;32mKTP: Socket 0: Sending ACK, last_ack=14, window=9
+[0;36mKTP: Socket 1: New packet sent with sequence 16
+[0;32mKTP: Socket 0: Data packet received with seq=15
+[0;32mKTP: Socket 0: Sending ACK, last_ack=15, window=8
+[0;36mKTP: Socket 1: New packet sent with sequence 17
+[0;32mKTP: Socket 0: Data packet received with seq=16
+[0;32mKTP: Socket 0: Sending ACK, last_ack=16, window=7
+[0;32mKTP: Socket 0: Data packet received with seq=17
+[0;32mKTP: Socket 0: Sending ACK, last_ack=17, window=6
+[0;32mKTP: Socket 0: Data packet received with seq=18
+[0;32mKTP: Socket 0: Sending ACK, last_ack=18, window=5
+[0;36mKTP: Socket 1: New packet sent with sequence 18
+[0;36mKTP: Socket 1: New packet sent with sequence 19
+[0;36mKTP: Socket 1: New packet sent with sequence 20
+[0;32mKTP: Socket 0: Data packet received with seq=19
+[0;32mKTP: Socket 0: Sending ACK, last_ack=19, window=4
+[0;32mKTP: Socket 0: Data packet received with seq=20
+[0;32mKTP: Socket 0: Sending ACK, last_ack=20, window=3
+[0;31mKTP: Socket 1: Incoming packet deliberately dropped (simulated loss)
+[0;32mKTP: Socket 1: ACK received, last_ack=15, window=8
+[0;32mKTP: Socket 1: Processing ACK for 2 packets up to seq 15
+[0;32mKTP: Socket 1: Window advanced, base=6, unacked=5
+[0;32mKTP: Socket 1: ACK received, last_ack=16, window=7
+[0;32mKTP: Socket 1: Processing ACK for 1 packets up to seq 16
+[0;32mKTP: Socket 1: Window advanced, base=7, unacked=4
+[0;32mKTP: Socket 1: ACK received, last_ack=17, window=6
+[0;32mKTP: Socket 1: Processing ACK for 1 packets up to seq 17
+[0;32mKTP: Socket 1: Window advanced, base=8, unacked=3
+[0;32mKTP: Socket 1: ACK received, last_ack=18, window=5
+[0;32mKTP: Socket 1: Processing ACK for 1 packets up to seq 18
+[0;32mKTP: Socket 1: Window advanced, base=9, unacked=2
+[0;32mKTP: Socket 1: ACK received, last_ack=19, window=4
+[0;32mKTP: Socket 1: Processing ACK for 1 packets up to seq 19
+[0;32mKTP: Socket 1: Window advanced, base=0, unacked=1
+[0;32mKTP: Socket 1: ACK received, last_ack=20, window=3
+[0;32mKTP: Socket 1: Processing ACK for 1 packets up to seq 20
+[0;32mKTP: Socket 1: Window advanced, base=1, unacked=0
+[0;36mKTP: Socket 1: New packet sent with sequence 21
+[0;36mKTP: Socket 1: New packet sent with sequence 22
+[0;36mKTP: Socket 1: New packet sent with sequence 23
+[0;32mKTP: Socket 0: Data packet received with seq=21
+[0;32mKTP: Socket 0: Sending ACK, last_ack=21, window=9
+[0;32mKTP: Socket 0: Data packet received with seq=22
+[0;32mKTP: Socket 0: Sending ACK, last_ack=22, window=8
+[0;32mKTP: Socket 1: ACK received, last_ack=21, window=9
+[0;32mKTP: Socket 1: Processing ACK for 1 packets up to seq 21
+[0;32mKTP: Socket 1: Window advanced, base=2, unacked=2
+[0;32mKTP: Socket 0: Data packet received with seq=23
+[0;32mKTP: Socket 0: Sending ACK, last_ack=23, window=7
+[0;32mKTP: Socket 1: ACK received, last_ack=22, window=8
+[0;32mKTP: Socket 1: Processing ACK for 1 packets up to seq 22
+[0;32mKTP: Socket 1: Window advanced, base=3, unacked=1
+[0;32mKTP: Socket 1: ACK received, last_ack=23, window=7
+[0;32mKTP: Socket 1: Processing ACK for 1 packets up to seq 23
+[0;32mKTP: Socket 1: Window advanced, base=4, unacked=0
+[0;36mKTP: Socket 1: New packet sent with sequence 24
+[0;36mKTP: Socket 1: New packet sent with sequence 25
+[0;36mKTP: Socket 1: New packet sent with sequence 26
+[0;36mKTP: Socket 1: New packet sent with sequence 27
+[0;36mKTP: Socket 1: New packet sent with sequence 28
+[0;36mKTP: Socket 1: New packet sent with sequence 29
+[0;32mKTP: Socket 0: Data packet received with seq=24
+[0;32mKTP: Socket 0: Sending ACK, last_ack=24, window=9
+[0;36mKTP: Socket 1: New packet sent with sequence 30
+[0;32mKTP: Socket 0: Data packet received with seq=25
+[0;32mKTP: Socket 0: Sending ACK, last_ack=25, window=8
+[0;32mKTP: Socket 1: ACK received, last_ack=24, window=9
+[0;32mKTP: Socket 1: Processing ACK for 1 packets up to seq 24
+[0;32mKTP: Socket 1: Window advanced, base=5, unacked=6
+[0;32mKTP: Socket 0: Data packet received with seq=26
+[0;32mKTP: Socket 0: Sending ACK, last_ack=26, window=7
+[0;32mKTP: Socket 1: ACK received, last_ack=25, window=8
+[0;32mKTP: Socket 1: Processing ACK for 1 packets up to seq 25
+[0;32mKTP: Socket 1: Window advanced, base=6, unacked=5
+[0;32mKTP: Socket 0: Data packet received with seq=27
+[0;32mKTP: Socket 0: Sending ACK, last_ack=27, window=6
+[0;32mKTP: Socket 1: ACK received, last_ack=26, window=7
+[0;32mKTP: Socket 1: Processing ACK for 1 packets up to seq 26
+[0;32mKTP: Socket 1: Window advanced, base=7, unacked=4
+[0;32mKTP: Socket 0: Data packet received with seq=28
+[0;32mKTP: Socket 0: Sending ACK, last_ack=28, window=5
+[0;32mKTP: Socket 1: ACK received, last_ack=27, window=6
+[0;32mKTP: Socket 1: Processing ACK for 1 packets up to seq 27
+[0;32mKTP: Socket 1: Window advanced, base=8, unacked=3
+[0;32mKTP: Socket 0: Data packet received with seq=29
+[0;32mKTP: Socket 0: Sending ACK, last_ack=29, window=4
+[0;32mKTP: Socket 1: ACK received, last_ack=28, window=5
+[0;32mKTP: Socket 1: Processing ACK for 1 packets up to seq 28
+[0;32mKTP: Socket 1: Window advanced, base=9, unacked=2
+[0;32mKTP: Socket 0: Data packet received with seq=30
+[0;32mKTP: Socket 0: Sending ACK, last_ack=30, window=3
+[0;32mKTP: Socket 1: ACK received, last_ack=29, window=4
+[0;32mKTP: Socket 1: Processing ACK for 1 packets up to seq 29
+[0;32mKTP: Socket 1: Window advanced, base=0, unacked=1
+[0;31mKTP: Socket 1: Incoming packet deliberately dropped (simulated loss)
+[0;36mKTP: Socket 1: New packet sent with sequence 31
+[0;32mKTP: Socket 0: Data packet received with seq=31
+[0;32mKTP: Socket 0: Sending ACK, last_ack=31, window=9
+[0;36mKTP: Socket 1: New packet sent with sequence 32
+[0;36mKTP: Socket 1: New packet sent with sequence 33
+[0;32mKTP: Socket 0: Data packet received with seq=32
+[0;32mKTP: Socket 0: Sending ACK, last_ack=32, window=8
+[0;32mKTP: Socket 1: ACK received, last_ack=31, window=9
+[0;32mKTP: Socket 1: Processing ACK for 2 packets up to seq 31
+[0;32mKTP: Socket 1: Window advanced, base=2, unacked=2
+[0;32mKTP: Socket 0: Data packet received with seq=33
+[0;32mKTP: Socket 0: Sending ACK, last_ack=33, window=7
+[0;32mKTP: Socket 1: ACK received, last_ack=32, window=8
+[0;32mKTP: Socket 1: Processing ACK for 1 packets up to seq 32
+[0;32mKTP: Socket 1: Window advanced, base=3, unacked=1
+[0;32mKTP: Socket 1: ACK received, last_ack=33, window=7
+[0;32mKTP: Socket 1: Processing ACK for 1 packets up to seq 33
+[0;32mKTP: Socket 1: Window advanced, base=4, unacked=0
+[0;36mKTP: Socket 1: New packet sent with sequence 34
+[0;36mKTP: Socket 1: New packet sent with sequence 35
+[0;36mKTP: Socket 1: New packet sent with sequence 36
+[0;36mKTP: Socket 1: New packet sent with sequence 37
+[0;36mKTP: Socket 1: New packet sent with sequence 38
+[0;32mKTP: Socket 0: Data packet received with seq=34
+[0;32mKTP: Socket 0: Sending ACK, last_ack=34, window=9
+[0;36mKTP: Socket 1: New packet sent with sequence 39
+[0;36mKTP: Socket 1: New packet sent with sequence 40
+[0;32mKTP: Socket 0: Data packet received with seq=35
+[0;32mKTP: Socket 0: Sending ACK, last_ack=35, window=8
+[0;32mKTP: Socket 1: ACK received, last_ack=34, window=9
+[0;32mKTP: Socket 1: Processing ACK for 1 packets up to seq 34
+[0;32mKTP: Socket 1: Window advanced, base=5, unacked=6
+[0;32mKTP: Socket 0: Data packet received with seq=36
+[0;32mKTP: Socket 0: Sending ACK, last_ack=36, window=7
+[0;32mKTP: Socket 1: ACK received, last_ack=35, window=8
+[0;32mKTP: Socket 1: Processing ACK for 1 packets up to seq 35
+[0;32mKTP: Socket 1: Window advanced, base=6, unacked=5
+[0;32mKTP: Socket 0: Data packet received with seq=37
+[0;32mKTP: Socket 0: Sending ACK, last_ack=37, window=6
+[0;32mKTP: Socket 1: ACK received, last_ack=36, window=7
+[0;32mKTP: Socket 1: Processing ACK for 1 packets up to seq 36
+[0;32mKTP: Socket 1: Window advanced, base=7, unacked=4
+[0;32mKTP: Socket 0: Data packet received with seq=38
+[0;32mKTP: Socket 0: Sending ACK, last_ack=38, window=5
+[0;32mKTP: Socket 1: ACK received, last_ack=37, window=6
+[0;32mKTP: Socket 1: Processing ACK for 1 packets up to seq 37
+[0;32mKTP: Socket 1: Window advanced, base=8, unacked=3
+[0;32mKTP: Socket 0: Data packet received with seq=39
+[0;32mKTP: Socket 0: Sending ACK, last_ack=39, window=4
+[0;32mKTP: Socket 1: ACK received, last_ack=38, window=5
+[0;32mKTP: Socket 1: Processing ACK for 1 packets up to seq 38
+[0;32mKTP: Socket 1: Window advanced, base=9, unacked=2
+[0;32mKTP: Socket 0: Data packet received with seq=40
+[0;32mKTP: Socket 0: Sending ACK, last_ack=40, window=3
+[0;32mKTP: Socket 1: ACK received, last_ack=39, window=4
+[0;32mKTP: Socket 1: Processing ACK for 1 packets up to seq 39
+[0;32mKTP: Socket 1: Window advanced, base=0, unacked=1
+[0;32mKTP: Socket 1: ACK received, last_ack=40, window=3
+[0;32mKTP: Socket 1: Processing ACK for 1 packets up to seq 40
+[0;32mKTP: Socket 1: Window advanced, base=1, unacked=0
+[0;36mKTP: Socket 1: New packet sent with sequence 41
+[0;36mKTP: Socket 1: New packet sent with sequence 42
+[0;36mKTP: Socket 1: New packet sent with sequence 43
+[0;32mKTP: Socket 0: Data packet received with seq=41
+[0;32mKTP: Socket 0: Sending ACK, last_ack=41, window=9
+[0;32mKTP: Socket 0: Data packet received with seq=42
+[0;32mKTP: Socket 0: Sending ACK, last_ack=42, window=8
+[0;32mKTP: Socket 1: ACK received, last_ack=41, window=9
+[0;32mKTP: Socket 1: Processing ACK for 1 packets up to seq 41
+[0;32mKTP: Socket 1: Window advanced, base=2, unacked=2
+[0;32mKTP: Socket 0: Data packet received with seq=43
+[0;32mKTP: Socket 0: Sending ACK, last_ack=43, window=7
+[0;32mKTP: Socket 1: ACK received, last_ack=42, window=8
+[0;32mKTP: Socket 1: Processing ACK for 1 packets up to seq 42
+[0;32mKTP: Socket 1: Window advanced, base=3, unacked=1
+[0;31mKTP: Socket 1: Incoming packet deliberately dropped (simulated loss)
+[0;36mKTP: Socket 1: New packet sent with sequence 44
+[0;36mKTP: Socket 1: New packet sent with sequence 45
+[0;36mKTP: Socket 1: New packet sent with sequence 46
+[0;36mKTP: Socket 1: New packet sent with sequence 47
+[0;36mKTP: Socket 1: New packet sent with sequence 48
+[0;32mKTP: Socket 0: Data packet received with seq=44
+[0;36mKTP: Socket 1: New packet sent with sequence 49
+[0;32mKTP: Socket 0: Sending ACK, last_ack=44, window=9
+[0;36mKTP: Socket 1: New packet sent with sequence 50
+[0;32mKTP: Socket 0: Data packet received with seq=45
+[0;32mKTP: Socket 0: Sending ACK, last_ack=45, window=8
+[0;31mKTP: Socket 1: Incoming packet deliberately dropped (simulated loss)
+[0;32mKTP: Socket 0: Data packet received with seq=46
+[0;32mKTP: Socket 0: Sending ACK, last_ack=46, window=7
+[0;32mKTP: Socket 1: ACK received, last_ack=45, window=8
+[0;32mKTP: Socket 1: Processing ACK for 3 packets up to seq 45
+[0;32mKTP: Socket 1: Window advanced, base=6, unacked=5
+[0;32mKTP: Socket 0: Data packet received with seq=47
+[0;32mKTP: Socket 0: Sending ACK, last_ack=47, window=6
+[0;32mKTP: Socket 1: ACK received, last_ack=46, window=7
+[0;32mKTP: Socket 1: Processing ACK for 1 packets up to seq 46
+[0;32mKTP: Socket 1: Window advanced, base=7, unacked=4
+[0;32mKTP: Socket 0: Data packet received with seq=48
+[0;32mKTP: Socket 0: Sending ACK, last_ack=48, window=5
+[0;32mKTP: Socket 1: ACK received, last_ack=47, window=6
+[0;32mKTP: Socket 1: Processing ACK for 1 packets up to seq 47
+[0;32mKTP: Socket 1: Window advanced, base=8, unacked=3
+[0;32mKTP: Socket 0: Data packet received with seq=49
+[0;32mKTP: Socket 0: Sending ACK, last_ack=49, window=4
+[0;32mKTP: Socket 1: ACK received, last_ack=48, window=5
+[0;32mKTP: Socket 1: Processing ACK for 1 packets up to seq 48
+[0;32mKTP: Socket 1: Window advanced, base=9, unacked=2
+[0;32mKTP: Socket 0: Data packet received with seq=50
+[0;32mKTP: Socket 0: Sending ACK, last_ack=50, window=3
+[0;32mKTP: Socket 1: ACK received, last_ack=49, window=4
+[0;32mKTP: Socket 1: Processing ACK for 1 packets up to seq 49
+[0;32mKTP: Socket 1: Window advanced, base=0, unacked=1
+[0;32mKTP: Socket 1: ACK received, last_ack=50, window=3
+[0;32mKTP: Socket 1: Processing ACK for 1 packets up to seq 50
+[0;32mKTP: Socket 1: Window advanced, base=1, unacked=0
+[0;36mKTP: Socket 1: New packet sent with sequence 51
+[0;36mKTP: Socket 1: New packet sent with sequence 52
+[0;36mKTP: Socket 1: New packet sent with sequence 53
+[0;32mKTP: Socket 0: Data packet received with seq=51
+[0;32mKTP: Socket 0: Sending ACK, last_ack=51, window=9
+[0;32mKTP: Socket 0: Data packet received with seq=52
+[0;32mKTP: Socket 0: Sending ACK, last_ack=52, window=8
+[0;32mKTP: Socket 1: ACK received, last_ack=51, window=9
+[0;32mKTP: Socket 1: Processing ACK for 1 packets up to seq 51
+[0;32mKTP: Socket 1: Window advanced, base=2, unacked=2
+[0;31mKTP: Socket 0: Incoming packet deliberately dropped (simulated loss)
+[0;32mKTP: Socket 1: ACK received, last_ack=52, window=8
+[0;32mKTP: Socket 1: Processing ACK for 1 packets up to seq 52
+[0;32mKTP: Socket 1: Window advanced, base=3, unacked=1
+[0;36mKTP: Socket 1: New packet sent with sequence 54
+[0;36mKTP: Socket 1: New packet sent with sequence 55
+[0;36mKTP: Socket 1: New packet sent with sequence 56
+[0;36mKTP: Socket 1: New packet sent with sequence 57
+[0;36mKTP: Socket 1: New packet sent with sequence 58
+[0;36mKTP: Socket 1: New packet sent with sequence 59
+[0;36mKTP: Socket 1: New packet sent with sequence 60
+[0;32mKTP: Socket 0: Data packet received with seq=54
+[0;32mKTP: Socket 0: Sending ACK, last_ack=52, window=10
+[0;32mKTP: Socket 0: Data packet received with seq=55
+[0;32mKTP: Socket 0: Sending ACK, last_ack=52, window=10
+[0;32mKTP: Socket 1: ACK received, last_ack=52, window=10
+[0;32mKTP: Socket 1: Duplicate ACK 52, updating window only
+[0;31mKTP: Socket 0: Incoming packet deliberately dropped (simulated loss)
+[0;32mKTP: Socket 1: ACK received, last_ack=52, window=10
+[0;32mKTP: Socket 1: Duplicate ACK 52, updating window only
+[0;31mKTP: Socket 0: Incoming packet deliberately dropped (simulated loss)
+[0;32mKTP: Socket 0: Data packet received with seq=58
+[0;32mKTP: Socket 0: Sending ACK, last_ack=52, window=10
+[0;32mKTP: Socket 0: Data packet received with seq=59
+[0;32mKTP: Socket 0: Sending ACK, last_ack=52, window=10
+[0;32mKTP: Socket 0: Data packet received with seq=60
+[0;32mKTP: Socket 0: Sending ACK, last_ack=52, window=10
+[0;32mKTP: Socket 1: ACK received, last_ack=52, window=10
+[0;32mKTP: Socket 1: Duplicate ACK 52, updating window only
+[0;32mKTP: Socket 1: ACK received, last_ack=52, window=10
+[0;32mKTP: Socket 1: Duplicate ACK 52, updating window only
+[0;31mKTP: Socket 1: Incoming packet deliberately dropped (simulated loss)
+[0;36mKTP: Socket 1: Timeout detected, retransmitting 8 pending packets
+[0;36mKTP: Socket 1: New packet sent with sequence 61
+[0;36mKTP: Socket 1: New packet sent with sequence 62
+[0;32mKTP: Socket 0: Data packet received with seq=53
+[0;32mKTP: Socket 0: Sending ACK, last_ack=55, window=7
+[0;32mKTP: Socket 0: Data packet received with seq=54
+[0;32mKTP: Socket 0: Sending ACK for duplicate packet, last_ack=55
+[0;32mKTP: Socket 1: ACK received, last_ack=55, window=7
+[0;32mKTP: Socket 1: Processing ACK for 3 packets up to seq 55
+[0;32mKTP: Socket 1: Window advanced, base=6, unacked=7
+[0;32mKTP: Socket 0: Data packet received with seq=55
+[0;32mKTP: Socket 0: Sending ACK for duplicate packet, last_ack=55
+[0;32mKTP: Socket 1: ACK received, last_ack=55, window=7
+[0;32mKTP: Socket 1: Duplicate ACK 55, updating window only
+[0;32mKTP: Socket 0: Data packet received with seq=56
+[0;32mKTP: Socket 0: Sending ACK, last_ack=56, window=6
+[0;32mKTP: Socket 1: ACK received, last_ack=55, window=7
+[0;32mKTP: Socket 1: Duplicate ACK 55, updating window only
+[0;32mKTP: Socket 0: Data packet received with seq=57
+[0;32mKTP: Socket 0: Sending ACK, last_ack=60, window=2
+[0;32mKTP: Socket 0: Data packet received with seq=58
+[0;32mKTP: Socket 0: Sending ACK for duplicate packet, last_ack=60
+[0;32mKTP: Socket 1: ACK received, last_ack=56, window=6
+[0;32mKTP: Socket 1: Processing ACK for 1 packets up to seq 56
+[0;32mKTP: Socket 1: Window advanced, base=7, unacked=6
+[0;31mKTP: Socket 0: Incoming packet deliberately dropped (simulated loss)
+[0;32mKTP: Socket 1: ACK received, last_ack=60, window=2
+[0;32mKTP: Socket 1: Processing ACK for 4 packets up to seq 60
+[0;32mKTP: Socket 1: Window advanced, base=1, unacked=2
+[0;32mKTP: Socket 0: Data packet received with seq=60
+[0;32mKTP: Socket 0: Sending ACK for duplicate packet, last_ack=60
+[0;32mKTP: Socket 1: ACK received, last_ack=60, window=2
+[0;32mKTP: Socket 1: Duplicate ACK 60, updating window only
+[0;31mKTP: Socket 0: Incoming packet deliberately dropped (simulated loss)
+[0;32mKTP: Socket 1: ACK received, last_ack=60, window=2
+[0;32mKTP: Socket 1: Duplicate ACK 60, updating window only
+[0;32mKTP: Socket 0: Data packet received with seq=62
+[0;32mKTP: Socket 0: Sending ACK, last_ack=60, window=2
+[0;32mKTP: Socket 1: ACK received, last_ack=60, window=2
+[0;32mKTP: Socket 1: Duplicate ACK 60, updating window only
+[0;36mKTP: Socket 1: Timeout detected, retransmitting 2 pending packets
+[0;32mKTP: Socket 0: Data packet received with seq=61
+[0;32mKTP: Socket 0: Sending ACK, last_ack=62, window=8
+[0;32mKTP: Socket 0: Data packet received with seq=62
+[0;32mKTP: Socket 0: Sending ACK for duplicate packet, last_ack=62
+[0;32mKTP: Socket 1: ACK received, last_ack=62, window=8
+[0;32mKTP: Socket 1: Processing ACK for 2 packets up to seq 62
+[0;32mKTP: Socket 1: Window advanced, base=3, unacked=0
+[0;32mKTP: Socket 1: ACK received, last_ack=62, window=8
+[0;32mKTP: Socket 1: Duplicate ACK 62, updating window only
+[0;36mKTP: Socket 1: New packet sent with sequence 63
+[0;36mKTP: Socket 1: New packet sent with sequence 64
+[0;36mKTP: Socket 1: New packet sent with sequence 65
+[0;32mKTP: Socket 0: Data packet received with seq=63
+[0;32mKTP: Socket 0: Sending ACK, last_ack=63, window=9
+[0;36mKTP: Socket 1: New packet sent with sequence 66
+[0;36mKTP: Socket 1: New packet sent with sequence 67
+[0;36mKTP: Socket 1: New packet sent with sequence 68
+[0;36mKTP: Socket 1: New packet sent with sequence 69
+[0;36mKTP: Socket 1: New packet sent with sequence 70
+[0;32mKTP: Socket 0: Data packet received with seq=64
+[0;32mKTP: Socket 0: Sending ACK, last_ack=64, window=8
+[0;32mKTP: Socket 0: Data packet received with seq=65
+[0;32mKTP: Socket 0: Sending ACK, last_ack=65, window=7
+[0;32mKTP: Socket 1: ACK received, last_ack=63, window=9
+[0;32mKTP: Socket 1: Processing ACK for 1 packets up to seq 63
+[0;32mKTP: Socket 1: Window advanced, base=4, unacked=7
+[0;32mKTP: Socket 0: Data packet received with seq=66
+[0;32mKTP: Socket 0: Sending ACK, last_ack=66, window=6
+[0;32mKTP: Socket 1: ACK received, last_ack=64, window=8
+[0;32mKTP: Socket 1: Processing ACK for 1 packets up to seq 64
+[0;32mKTP: Socket 1: Window advanced, base=5, unacked=6
+[0;32mKTP: Socket 0: Data packet received with seq=67
+[0;32mKTP: Socket 0: Sending ACK, last_ack=67, window=5
+[0;32mKTP: Socket 1: ACK received, last_ack=65, window=7
+[0;32mKTP: Socket 1: Processing ACK for 1 packets up to seq 65
+[0;32mKTP: Socket 1: Window advanced, base=6, unacked=5
+[0;32mKTP: Socket 0: Data packet received with seq=68
+[0;32mKTP: Socket 0: Sending ACK, last_ack=68, window=4
+[0;31mKTP: Socket 1: Incoming packet deliberately dropped (simulated loss)
+[0;32mKTP: Socket 0: Data packet received with seq=69
+[0;32mKTP: Socket 0: Sending ACK, last_ack=69, window=3
+[0;32mKTP: Socket 1: ACK received, last_ack=67, window=5
+[0;32mKTP: Socket 1: Processing ACK for 2 packets up to seq 67
+[0;32mKTP: Socket 1: Window advanced, base=8, unacked=3
+[0;32mKTP: Socket 0: Data packet received with seq=70
+[0;32mKTP: Socket 0: Sending ACK, last_ack=70, window=2
+[0;32mKTP: Socket 1: ACK received, last_ack=68, window=4
+[0;32mKTP: Socket 1: Processing ACK for 1 packets up to seq 68
+[0;32mKTP: Socket 1: Window advanced, base=9, unacked=2
+[0;32mKTP: Socket 1: ACK received, last_ack=69, window=3
+[0;32mKTP: Socket 1: Processing ACK for 1 packets up to seq 69
+[0;32mKTP: Socket 1: Window advanced, base=0, unacked=1
+[0;32mKTP: Socket 1: ACK received, last_ack=70, window=2
+[0;32mKTP: Socket 1: Processing ACK for 1 packets up to seq 70
+[0;32mKTP: Socket 1: Window advanced, base=1, unacked=0
+[0;36mKTP: Socket 1: New packet sent with sequence 71
+[0;36mKTP: Socket 1: New packet sent with sequence 72
+[0;32mKTP: Socket 0: Data packet received with seq=71
+[0;32mKTP: Socket 0: Sending ACK, last_ack=71, window=9
+[0;32mKTP: Socket 0: Data packet received with seq=72
+[0;32mKTP: Socket 0: Sending ACK, last_ack=72, window=8
+[0;32mKTP: Socket 1: ACK received, last_ack=71, window=9
+[0;32mKTP: Socket 1: Processing ACK for 1 packets up to seq 71
+[0;32mKTP: Socket 1: Window advanced, base=2, unacked=1
+[0;32mKTP: Socket 1: ACK received, last_ack=72, window=8
+[0;32mKTP: Socket 1: Processing ACK for 1 packets up to seq 72
+[0;32mKTP: Socket 1: Window advanced, base=3, unacked=0
+[0;36mKTP: Socket 1: New packet sent with sequence 73
+[0;36mKTP: Socket 1: New packet sent with sequence 74
+[0;36mKTP: Socket 1: New packet sent with sequence 75
+[0;36mKTP: Socket 1: New packet sent with sequence 76
+[0;36mKTP: Socket 1: New packet sent with sequence 77
+[0;36mKTP: Socket 1: New packet sent with sequence 78
+[0;36mKTP: Socket 1: New packet sent with sequence 79
+[0;36mKTP: Socket 1: New packet sent with sequence 80
+[0;32mKTP: Socket 0: Data packet received with seq=73
+[0;32mKTP: Socket 0: Sending ACK, last_ack=73, window=9
+[0;31mKTP: Socket 0: Incoming packet deliberately dropped (simulated loss)
+[0;32mKTP: Socket 0: Data packet received with seq=75
+[0;32mKTP: Socket 0: Sending ACK, last_ack=73, window=9
+[0;32mKTP: Socket 0: Data packet received with seq=76
+[0;32mKTP: Socket 0: Sending ACK, last_ack=73, window=9
+[0;32mKTP: Socket 1: ACK received, last_ack=73, window=9
+[0;32mKTP: Socket 1: Processing ACK for 1 packets up to seq 73
+[0;32mKTP: Socket 1: Window advanced, base=4, unacked=7
+[0;32mKTP: Socket 0: Data packet received with seq=77
+[0;32mKTP: Socket 0: Sending ACK, last_ack=73, window=9
+[0;31mKTP: Socket 1: Incoming packet deliberately dropped (simulated loss)
+[0;32mKTP: Socket 0: Data packet received with seq=78
+[0;32mKTP: Socket 0: Sending ACK, last_ack=73, window=9
+[0;32mKTP: Socket 1: ACK received, last_ack=73, window=9
+[0;32mKTP: Socket 1: Duplicate ACK 73, updating window only
+[0;32mKTP: Socket 0: Data packet received with seq=79
+[0;32mKTP: Socket 0: Sending ACK, last_ack=73, window=9
+[0;32mKTP: Socket 0: Data packet received with seq=80
+[0;32mKTP: Socket 0: Sending ACK, last_ack=73, window=9
+[0;32mKTP: Socket 1: ACK received, last_ack=73, window=9
+[0;32mKTP: Socket 1: Duplicate ACK 73, updating window only
+[0;31mKTP: Socket 1: Incoming packet deliberately dropped (simulated loss)
+[0;32mKTP: Socket 1: ACK received, last_ack=73, window=9
+[0;32mKTP: Socket 1: Duplicate ACK 73, updating window only
+[0;32mKTP: Socket 1: ACK received, last_ack=73, window=9
+[0;32mKTP: Socket 1: Duplicate ACK 73, updating window only
+[0;36mKTP: Socket 1: New packet sent with sequence 81
+[0;36mKTP: Socket 1: New packet sent with sequence 82
+[0;32mKTP: Socket 0: Data packet received with seq=81
+[0;32mKTP: Socket 0: Sending ACK, last_ack=73, window=10
+[0;32mKTP: Socket 0: Data packet received with seq=82
+[0;32mKTP: Socket 0: Sending ACK, last_ack=73, window=10
+[0;32mKTP: Socket 1: ACK received, last_ack=73, window=10
+[0;32mKTP: Socket 1: Duplicate ACK 73, updating window only
+[0;32mKTP: Socket 1: ACK received, last_ack=73, window=10
+[0;32mKTP: Socket 1: Duplicate ACK 73, updating window only
+[0;36mKTP: Socket 1: Timeout detected, retransmitting 9 pending packets
+[0;36mKTP: Socket 1: New packet sent with sequence 83
+[0;32mKTP: Socket 0: Data packet received with seq=74
+[0;32mKTP: Socket 0: Sending ACK, last_ack=82, window=1
+[0;32mKTP: Socket 0: Data packet received with seq=75
+[0;32mKTP: Socket 0: Sending ACK for duplicate packet, last_ack=82
+[0;32mKTP: Socket 0: Data packet received with seq=76
+[0;32mKTP: Socket 0: Sending ACK for duplicate packet, last_ack=82
+[0;32mKTP: Socket 0: Data packet received with seq=77
+[0;32mKTP: Socket 0: Sending ACK for duplicate packet, last_ack=82
+[0;32mKTP: Socket 1: ACK received, last_ack=82, window=1
+[0;32mKTP: Socket 1: Processing ACK for 9 packets up to seq 82
+[0;32mKTP: Socket 1: Window advanced, base=3, unacked=1
+[0;32mKTP: Socket 0: Data packet received with seq=78
+[0;32mKTP: Socket 0: Sending ACK for duplicate packet, last_ack=82
+[0;32mKTP: Socket 1: ACK received, last_ack=82, window=1
+[0;32mKTP: Socket 1: Duplicate ACK 82, updating window only
+[0;32mKTP: Socket 0: Data packet received with seq=79
+[0;32mKTP: Socket 0: Sending ACK for duplicate packet, last_ack=82
+[0;32mKTP: Socket 1: ACK received, last_ack=82, window=1
+[0;32mKTP: Socket 1: Duplicate ACK 82, updating window only
+[0;32mKTP: Socket 0: Data packet received with seq=80
+[0;32mKTP: Socket 0: Sending ACK for duplicate packet, last_ack=82
+[0;32mKTP: Socket 1: ACK received, last_ack=82, window=1
+[0;32mKTP: Socket 1: Duplicate ACK 82, updating window only
+[0;32mKTP: Socket 0: Data packet received with seq=81
+[0;32mKTP: Socket 0: Sending ACK for duplicate packet, last_ack=82
+[0;32mKTP: Socket 1: ACK received, last_ack=82, window=1
+[0;32mKTP: Socket 1: Duplicate ACK 82, updating window only
+[0;32mKTP: Socket 0: Data packet received with seq=82
+[0;32mKTP: Socket 0: Sending ACK for duplicate packet, last_ack=82
+[0;32mKTP: Socket 1: ACK received, last_ack=82, window=1
+[0;32mKTP: Socket 1: Duplicate ACK 82, updating window only
+[0;31mKTP: Socket 0: Incoming packet deliberately dropped (simulated loss)
+[0;32mKTP: Socket 1: ACK received, last_ack=82, window=1
+[0;32mKTP: Socket 1: Duplicate ACK 82, updating window only
+[0;32mKTP: Socket 1: ACK received, last_ack=82, window=1
+[0;32mKTP: Socket 1: Duplicate ACK 82, updating window only
+[0;32mKTP: Socket 1: ACK received, last_ack=82, window=1
+[0;32mKTP: Socket 1: Duplicate ACK 82, updating window only
+[0;36mKTP: Socket 1: Timeout detected, retransmitting 1 pending packets
+[0;32mKTP: Socket 0: Data packet received with seq=83
+[0;32mKTP: Socket 0: Sending ACK, last_ack=83, window=9
+[0;32mKTP: Socket 1: ACK received, last_ack=83, window=9
+[0;32mKTP: Socket 1: Processing ACK for 1 packets up to seq 83
+[0;32mKTP: Socket 1: Window advanced, base=4, unacked=0
+[0;36mKTP: Socket 1: New packet sent with sequence 84
+[0;36mKTP: Socket 1: New packet sent with sequence 85
+[0;36mKTP: Socket 1: New packet sent with sequence 86
+[0;36mKTP: Socket 1: New packet sent with sequence 87
+[0;36mKTP: Socket 1: New packet sent with sequence 88
+[0;36mKTP: Socket 1: New packet sent with sequence 89
+[0;32mKTP: Socket 0: Data packet received with seq=84
+[0;32mKTP: Socket 0: Sending ACK, last_ack=84, window=9
+[0;36mKTP: Socket 1: New packet sent with sequence 90
+[0;36mKTP: Socket 1: New packet sent with sequence 91
+[0;36mKTP: Socket 1: New packet sent with sequence 92
+[0;32mKTP: Socket 0: Data packet received with seq=85
+[0;32mKTP: Socket 0: Sending ACK, last_ack=85, window=8
+[0;31mKTP: Socket 1: Incoming packet deliberately dropped (simulated loss)
+[0;32mKTP: Socket 0: Data packet received with seq=86
+[0;32mKTP: Socket 0: Sending ACK, last_ack=86, window=7
+[0;32mKTP: Socket 1: ACK received, last_ack=85, window=8
+[0;32mKTP: Socket 1: Processing ACK for 2 packets up to seq 85
+[0;32mKTP: Socket 1: Window advanced, base=6, unacked=7
+[0;32mKTP: Socket 0: Data packet received with seq=87
+[0;32mKTP: Socket 0: Sending ACK, last_ack=87, window=6
+[0;32mKTP: Socket 1: ACK received, last_ack=86, window=7
+[0;32mKTP: Socket 1: Processing ACK for 1 packets up to seq 86
+[0;32mKTP: Socket 1: Window advanced, base=7, unacked=6
+[0;32mKTP: Socket 0: Data packet received with seq=88
+[0;32mKTP: Socket 0: Sending ACK, last_ack=88, window=5
+[0;32mKTP: Socket 1: ACK received, last_ack=87, window=6
+[0;32mKTP: Socket 1: Processing ACK for 1 packets up to seq 87
+[0;32mKTP: Socket 1: Window advanced, base=8, unacked=5
+[0;31mKTP: Socket 0: Incoming packet deliberately dropped (simulated loss)
+[0;32mKTP: Socket 1: ACK received, last_ack=88, window=5
+[0;32mKTP: Socket 1: Processing ACK for 1 packets up to seq 88
+[0;32mKTP: Socket 1: Window advanced, base=9, unacked=4
+[0;32mKTP: Socket 0: Data packet received with seq=90
+[0;32mKTP: Socket 0: Sending ACK, last_ack=88, window=5
+[0;32mKTP: Socket 0: Data packet received with seq=91
+[0;32mKTP: Socket 0: Sending ACK, last_ack=88, window=5
+[0;31mKTP: Socket 0: Incoming packet deliberately dropped (simulated loss)
+[0;31mKTP: Socket 1: Incoming packet deliberately dropped (simulated loss)
+[0;32mKTP: Socket 1: ACK received, last_ack=88, window=5
+[0;32mKTP: Socket 1: Duplicate ACK 88, updating window only
+[0;36mKTP: Socket 1: New packet sent with sequence 93
+[0;32mKTP: Socket 0: Data packet received with seq=93
+[0;32mKTP: Socket 0: Sending ACK, last_ack=88, window=10
+[0;32mKTP: Socket 1: ACK received, last_ack=88, window=10
+[0;32mKTP: Socket 1: Duplicate ACK 88, updating window only
+[0;36mKTP: Socket 1: Timeout detected, retransmitting 5 pending packets
+[0;36mKTP: Socket 1: New packet sent with sequence 94
+[0;36mKTP: Socket 1: New packet sent with sequence 95
+[0;36mKTP: Socket 1: New packet sent with sequence 96
+[0;36mKTP: Socket 1: New packet sent with sequence 97
+[0;32mKTP: Socket 0: Data packet received with seq=89
+[0;32mKTP: Socket 0: Sending ACK, last_ack=91, window=7
+[0;36mKTP: Socket 1: New packet sent with sequence 98
+[0;32mKTP: Socket 0: Data packet received with seq=90
+[0;32mKTP: Socket 0: Sending ACK for duplicate packet, last_ack=91
+[0;32mKTP: Socket 1: ACK received, last_ack=91, window=7
+[0;32mKTP: Socket 1: Processing ACK for 3 packets up to seq 91
+[0;32mKTP: Socket 1: Window advanced, base=2, unacked=7
+[0;32mKTP: Socket 0: Data packet received with seq=91
+[0;32mKTP: Socket 0: Sending ACK for duplicate packet, last_ack=91
+[0;31mKTP: Socket 1: Incoming packet deliberately dropped (simulated loss)
+[0;32mKTP: Socket 0: Data packet received with seq=92
+[0;32mKTP: Socket 0: Sending ACK, last_ack=93, window=5
+[0;32mKTP: Socket 1: ACK received, last_ack=91, window=7
+[0;32mKTP: Socket 1: Duplicate ACK 91, updating window only
+[0;32mKTP: Socket 0: Data packet received with seq=93
+[0;32mKTP: Socket 0: Sending ACK for duplicate packet, last_ack=93
+[0;32mKTP: Socket 0: Data packet received with seq=94
+[0;32mKTP: Socket 0: Sending ACK, last_ack=94, window=4
+[0;32mKTP: Socket 1: ACK received, last_ack=93, window=5
+[0;32mKTP: Socket 1: Processing ACK for 2 packets up to seq 93
+[0;32mKTP: Socket 1: Window advanced, base=4, unacked=5
+[0;32mKTP: Socket 0: Data packet received with seq=95
+[0;32mKTP: Socket 0: Sending ACK, last_ack=95, window=3
+[0;32mKTP: Socket 1: ACK received, last_ack=93, window=5
+[0;32mKTP: Socket 1: Duplicate ACK 93, updating window only
+[0;32mKTP: Socket 0: Data packet received with seq=96
+[0;32mKTP: Socket 0: Sending ACK, last_ack=96, window=2
+[0;32mKTP: Socket 1: ACK received, last_ack=94, window=4
+[0;32mKTP: Socket 1: Processing ACK for 1 packets up to seq 94
+[0;32mKTP: Socket 1: Window advanced, base=5, unacked=4
+[0;31mKTP: Socket 0: Incoming packet deliberately dropped (simulated loss)
+[0;32mKTP: Socket 1: ACK received, last_ack=95, window=3
+[0;32mKTP: Socket 1: Processing ACK for 1 packets up to seq 95
+[0;32mKTP: Socket 1: Window advanced, base=6, unacked=3
+[0;32mKTP: Socket 0: Data packet received with seq=98
+[0;32mKTP: Socket 0: Sending ACK, last_ack=96, window=2
+[0;32mKTP: Socket 1: ACK received, last_ack=96, window=2
+[0;32mKTP: Socket 1: Processing ACK for 1 packets up to seq 96
+[0;32mKTP: Socket 1: Window advanced, base=7, unacked=2
+[0;32mKTP: Socket 1: ACK received, last_ack=96, window=2
+[0;32mKTP: Socket 1: Duplicate ACK 96, updating window only
+[0;36mKTP: Socket 1: Timeout detected, retransmitting 2 pending packets
+[0;31mKTP: Socket 0: Incoming packet deliberately dropped (simulated loss)
+[0;31mKTP: Socket 0: Incoming packet deliberately dropped (simulated loss)
+[0;36mKTP: Socket 1: Timeout detected, retransmitting 2 pending packets
+[0;32mKTP: Socket 0: Data packet received with seq=97
+[0;32mKTP: Socket 0: Sending ACK, last_ack=98, window=8
+[0;32mKTP: Socket 0: Data packet received with seq=98
+[0;32mKTP: Socket 0: Sending ACK for duplicate packet, last_ack=98
+[0;32mKTP: Socket 1: ACK received, last_ack=98, window=8
+[0;32mKTP: Socket 1: Processing ACK for 2 packets up to seq 98
+[0;32mKTP: Socket 1: Window advanced, base=9, unacked=0
+[0;32mKTP: Socket 1: ACK received, last_ack=98, window=8
+[0;32mKTP: Socket 1: Duplicate ACK 98, updating window only
+[0;36mKTP: Socket 1: New packet sent with sequence 99
+[0;36mKTP: Socket 1: New packet sent with sequence 100
+[0;36mKTP: Socket 1: New packet sent with sequence 101
+[0;36mKTP: Socket 1: New packet sent with sequence 102
+[0;36mKTP: Socket 1: New packet sent with sequence 103
+[0;36mKTP: Socket 1: New packet sent with sequence 104
+[0;32mKTP: Socket 0: Data packet received with seq=99
+[0;36mKTP: Socket 1: New packet sent with sequence 105
+[0;32mKTP: Socket 0: Sending ACK, last_ack=99, window=9
+[0;36mKTP: Socket 1: New packet sent with sequence 106
+[0;32mKTP: Socket 0: Data packet received with seq=100
+[0;32mKTP: Socket 0: Sending ACK, last_ack=100, window=8
+[0;32mKTP: Socket 1: ACK received, last_ack=99, window=9
+[0;32mKTP: Socket 1: Processing ACK for 1 packets up to seq 99
+[0;32mKTP: Socket 1: Window advanced, base=0, unacked=7
+[0;31mKTP: Socket 0: Incoming packet deliberately dropped (simulated loss)
+[0;31mKTP: Socket 1: Incoming packet deliberately dropped (simulated loss)
+[0;32mKTP: Socket 0: Data packet received with seq=102
+[0;32mKTP: Socket 0: Sending ACK, last_ack=100, window=8
+[0;32mKTP: Socket 0: Data packet received with seq=103
+[0;32mKTP: Socket 0: Sending ACK, last_ack=100, window=8
+[0;32mKTP: Socket 0: Data packet received with seq=104
+[0;32mKTP: Socket 0: Sending ACK, last_ack=100, window=8
+[0;32mKTP: Socket 1: ACK received, last_ack=100, window=8
+[0;32mKTP: Socket 1: Processing ACK for 1 packets up to seq 100
+[0;32mKTP: Socket 1: Window advanced, base=1, unacked=6
+[0;32mKTP: Socket 0: Data packet received with seq=105
+[0;32mKTP: Socket 0: Sending ACK, last_ack=100, window=8
+[0;32mKTP: Socket 1: ACK received, last_ack=100, window=8
+[0;32mKTP: Socket 1: Duplicate ACK 100, updating window only
+[0;31mKTP: Socket 0: Incoming packet deliberately dropped (simulated loss)
+[0;31mKTP: Socket 1: Incoming packet deliberately dropped (simulated loss)
+[0;32mKTP: Socket 1: ACK received, last_ack=100, window=8
+[0;32mKTP: Socket 1: Duplicate ACK 100, updating window only
+[0;36mKTP: Socket 1: New packet sent with sequence 107
+[0;36mKTP: Socket 1: New packet sent with sequence 108
+[0;32mKTP: Socket 0: Data packet received with seq=107
+[0;32mKTP: Socket 0: Sending ACK, last_ack=100, window=10
+[0;32mKTP: Socket 0: Data packet received with seq=108
+[0;32mKTP: Socket 0: Sending ACK, last_ack=100, window=10
+[0;32mKTP: Socket 1: ACK received, last_ack=100, window=10
+[0;32mKTP: Socket 1: Duplicate ACK 100, updating window only
+[0;32mKTP: Socket 1: ACK received, last_ack=100, window=10
+[0;32mKTP: Socket 1: Duplicate ACK 100, updating window only
+[0;36mKTP: Socket 1: Timeout detected, retransmitting 8 pending packets
+[0;32mKTP: Socket 0: Data packet received with seq=101
+[0;32mKTP: Socket 0: Sending ACK, last_ack=105, window=5
+[0;36mKTP: Socket 1: New packet sent with sequence 109
+[0;36mKTP: Socket 1: New packet sent with sequence 110
+[0;32mKTP: Socket 0: Data packet received with seq=102
+[0;32mKTP: Socket 0: Sending ACK for duplicate packet, last_ack=105
+[0;32mKTP: Socket 1: ACK received, last_ack=105, window=5
+[0;32mKTP: Socket 1: Processing ACK for 5 packets up to seq 105
+[0;32mKTP: Socket 1: Window advanced, base=6, unacked=5
+[0;32mKTP: Socket 0: Data packet received with seq=103
+[0;32mKTP: Socket 0: Sending ACK for duplicate packet, last_ack=105
+[0;32mKTP: Socket 1: ACK received, last_ack=105, window=5
+[0;32mKTP: Socket 1: Duplicate ACK 105, updating window only
+[0;32mKTP: Socket 0: Data packet received with seq=104
+[0;32mKTP: Socket 0: Sending ACK for duplicate packet, last_ack=105
+[0;32mKTP: Socket 1: ACK received, last_ack=105, window=5
+[0;32mKTP: Socket 1: Duplicate ACK 105, updating window only
+[0;32mKTP: Socket 0: Data packet received with seq=105
+[0;32mKTP: Socket 0: Sending ACK for duplicate packet, last_ack=105
+[0;32mKTP: Socket 1: ACK received, last_ack=105, window=5
+[0;32mKTP: Socket 1: Duplicate ACK 105, updating window only
+[0;32mKTP: Socket 0: Data packet received with seq=106
+[0;32mKTP: Socket 0: Sending ACK, last_ack=108, window=2
+[0;32mKTP: Socket 1: ACK received, last_ack=105, window=5
+[0;32mKTP: Socket 1: Duplicate ACK 105, updating window only
+[0;32mKTP: Socket 0: Data packet received with seq=107
+[0;32mKTP: Socket 0: Sending ACK for duplicate packet, last_ack=108
+[0;32mKTP: Socket 1: ACK received, last_ack=108, window=2
+[0;32mKTP: Socket 1: Processing ACK for 3 packets up to seq 108
+[0;32mKTP: Socket 1: Window advanced, base=9, unacked=2
+[0;32mKTP: Socket 0: Data packet received with seq=108
+[0;32mKTP: Socket 0: Sending ACK for duplicate packet, last_ack=108
+[0;32mKTP: Socket 1: ACK received, last_ack=108, window=2
+[0;32mKTP: Socket 1: Duplicate ACK 108, updating window only
+[0;31mKTP: Socket 0: Incoming packet deliberately dropped (simulated loss)
+[0;32mKTP: Socket 1: ACK received, last_ack=108, window=2
+[0;32mKTP: Socket 1: Duplicate ACK 108, updating window only
+[0;32mKTP: Socket 0: Data packet received with seq=110
+[0;32mKTP: Socket 0: Sending ACK, last_ack=108, window=2
+[0;32mKTP: Socket 1: ACK received, last_ack=108, window=2
+[0;32mKTP: Socket 1: Duplicate ACK 108, updating window only
+[0;36mKTP: Socket 1: Timeout detected, retransmitting 2 pending packets
+[0;32mKTP: Socket 0: Data packet received with seq=109
+[0;32mKTP: Socket 0: Sending ACK, last_ack=110, window=8
+[0;32mKTP: Socket 0: Data packet received with seq=110
+[0;32mKTP: Socket 0: Sending ACK for duplicate packet, last_ack=110
+[0;32mKTP: Socket 1: ACK received, last_ack=110, window=8
+[0;32mKTP: Socket 1: Processing ACK for 2 packets up to seq 110
+[0;32mKTP: Socket 1: Window advanced, base=1, unacked=0
+[0;32mKTP: Socket 1: ACK received, last_ack=110, window=8
+[0;32mKTP: Socket 1: Duplicate ACK 110, updating window only
+[0;36mKTP: Socket 1: New packet sent with sequence 111
+[0;36mKTP: Socket 1: New packet sent with sequence 112
+[0;36mKTP: Socket 1: New packet sent with sequence 113
+[0;36mKTP: Socket 1: New packet sent with sequence 114
+[0;36mKTP: Socket 1: New packet sent with sequence 115
+[0;36mKTP: Socket 1: New packet sent with sequence 116
+[0;36mKTP: Socket 1: New packet sent with sequence 117
+[0;36mKTP: Socket 1: New packet sent with sequence 118
+[0;32mKTP: Socket 0: Data packet received with seq=111
+[0;32mKTP: Socket 0: Sending ACK, last_ack=111, window=9
+[0;32mKTP: Socket 0: Data packet received with seq=112
+[0;32mKTP: Socket 0: Sending ACK, last_ack=112, window=8
+[0;32mKTP: Socket 0: Data packet received with seq=113
+[0;32mKTP: Socket 0: Sending ACK, last_ack=113, window=7
+[0;32mKTP: Socket 0: Data packet received with seq=114
+[0;32mKTP: Socket 0: Sending ACK, last_ack=114, window=6
+[0;32mKTP: Socket 0: Data packet received with seq=115
+[0;32mKTP: Socket 0: Sending ACK, last_ack=115, window=5
+[0;32mKTP: Socket 1: ACK received, last_ack=111, window=9
+[0;32mKTP: Socket 1: Processing ACK for 1 packets up to seq 111
+[0;32mKTP: Socket 1: Window advanced, base=2, unacked=7
+[0;32mKTP: Socket 0: Data packet received with seq=116
+[0;32mKTP: Socket 0: Sending ACK, last_ack=116, window=4
+[0;32mKTP: Socket 1: ACK received, last_ack=112, window=8
+[0;32mKTP: Socket 1: Processing ACK for 1 packets up to seq 112
+[0;32mKTP: Socket 1: Window advanced, base=3, unacked=6
+[0;32mKTP: Socket 0: Data packet received with seq=117
+[0;32mKTP: Socket 0: Sending ACK, last_ack=117, window=3
+[0;32mKTP: Socket 1: ACK received, last_ack=113, window=7
+[0;32mKTP: Socket 1: Processing ACK for 1 packets up to seq 113
+[0;32mKTP: Socket 1: Window advanced, base=4, unacked=5
+[0;32mKTP: Socket 0: Data packet received with seq=118
+[0;32mKTP: Socket 0: Sending ACK, last_ack=118, window=2
+[0;32mKTP: Socket 1: ACK received, last_ack=114, window=6
+[0;32mKTP: Socket 1: Processing ACK for 1 packets up to seq 114
+[0;32mKTP: Socket 1: Window advanced, base=5, unacked=4
+[0;32mKTP: Socket 1: ACK received, last_ack=115, window=5
+[0;32mKTP: Socket 1: Processing ACK for 1 packets up to seq 115
+[0;32mKTP: Socket 1: Window advanced, base=6, unacked=3
+[0;32mKTP: Socket 1: ACK received, last_ack=116, window=4
+[0;32mKTP: Socket 1: Processing ACK for 1 packets up to seq 116
+[0;32mKTP: Socket 1: Window advanced, base=7, unacked=2
+[0;31mKTP: Socket 1: Incoming packet deliberately dropped (simulated loss)
+[0;32mKTP: Socket 1: ACK received, last_ack=118, window=2
+[0;32mKTP: Socket 1: Processing ACK for 2 packets up to seq 118
+[0;32mKTP: Socket 1: Window advanced, base=9, unacked=0
+[0;36mKTP: Socket 1: New packet sent with sequence 119
+[0;36mKTP: Socket 1: New packet sent with sequence 120
+[0;32mKTP: Socket 0: Data packet received with seq=119
+[0;32mKTP: Socket 0: Sending ACK, last_ack=119, window=9
+[0;32mKTP: Socket 0: Data packet received with seq=120
+[0;32mKTP: Socket 0: Sending ACK, last_ack=120, window=8
+[0;32mKTP: Socket 1: ACK received, last_ack=119, window=9
+[0;32mKTP: Socket 1: Processing ACK for 1 packets up to seq 119
+[0;32mKTP: Socket 1: Window advanced, base=0, unacked=1
+[0;32mKTP: Socket 1: ACK received, last_ack=120, window=8
+[0;32mKTP: Socket 1: Processing ACK for 1 packets up to seq 120
+[0;32mKTP: Socket 1: Window advanced, base=1, unacked=0
+[0;36mKTP: Socket 1: New packet sent with sequence 121
+[0;36mKTP: Socket 1: New packet sent with sequence 122
+[0;36mKTP: Socket 1: New packet sent with sequence 123
+[0;36mKTP: Socket 1: New packet sent with sequence 124
+[0;36mKTP: Socket 1: New packet sent with sequence 125
+[0;32mKTP: Socket 0: Data packet received with seq=121
+[0;36mKTP: Socket 1: New packet sent with sequence 126
+[0;32mKTP: Socket 0: Sending ACK, last_ack=121, window=9
+[0;36mKTP: Socket 1: New packet sent with sequence 127
+[0;36mKTP: Socket 1: New packet sent with sequence 128
+[0;32mKTP: Socket 0: Data packet received with seq=122
+[0;32mKTP: Socket 0: Sending ACK, last_ack=122, window=8
+[0;32mKTP: Socket 1: ACK received, last_ack=121, window=9
+[0;32mKTP: Socket 1: Processing ACK for 1 packets up to seq 121
+[0;32mKTP: Socket 1: Window advanced, base=2, unacked=7
+[0;32mKTP: Socket 0: Data packet received with seq=123
+[0;32mKTP: Socket 0: Sending ACK, last_ack=123, window=7
+[0;32mKTP: Socket 1: ACK received, last_ack=122, window=8
+[0;32mKTP: Socket 1: Processing ACK for 1 packets up to seq 122
+[0;32mKTP: Socket 1: Window advanced, base=3, unacked=6
+[0;32mKTP: Socket 0: Data packet received with seq=124
+[0;32mKTP: Socket 0: Sending ACK, last_ack=124, window=6
+[0;32mKTP: Socket 1: ACK received, last_ack=123, window=7
+[0;32mKTP: Socket 1: Processing ACK for 1 packets up to seq 123
+[0;32mKTP: Socket 1: Window advanced, base=4, unacked=5
+[0;32mKTP: Socket 0: Data packet received with seq=125
+[0;32mKTP: Socket 0: Sending ACK, last_ack=125, window=5
+[0;32mKTP: Socket 1: ACK received, last_ack=124, window=6
+[0;32mKTP: Socket 1: Processing ACK for 1 packets up to seq 124
+[0;32mKTP: Socket 1: Window advanced, base=5, unacked=4
+[0;32mKTP: Socket 0: Data packet received with seq=126
+[0;32mKTP: Socket 0: Sending ACK, last_ack=126, window=4
+[0;32mKTP: Socket 1: ACK received, last_ack=125, window=5
+[0;32mKTP: Socket 1: Processing ACK for 1 packets up to seq 125
+[0;32mKTP: Socket 1: Window advanced, base=6, unacked=3
+[0;32mKTP: Socket 0: Data packet received with seq=127
+[0;32mKTP: Socket 0: Sending ACK, last_ack=127, window=3
+[0;32mKTP: Socket 1: ACK received, last_ack=126, window=4
+[0;32mKTP: Socket 1: Processing ACK for 1 packets up to seq 126
+[0;32mKTP: Socket 1: Window advanced, base=7, unacked=2
+[0;32mKTP: Socket 0: Data packet received with seq=128
+[0;32mKTP: Socket 0: Sending ACK, last_ack=128, window=2
+[0;32mKTP: Socket 1: ACK received, last_ack=127, window=3
+[0;32mKTP: Socket 1: Processing ACK for 1 packets up to seq 127
+[0;32mKTP: Socket 1: Window advanced, base=8, unacked=1
+[0;32mKTP: Socket 1: ACK received, last_ack=128, window=2
+[0;32mKTP: Socket 1: Processing ACK for 1 packets up to seq 128
+[0;32mKTP: Socket 1: Window advanced, base=9, unacked=0
+[0;36mKTP: Socket 1: New packet sent with sequence 129
+[0;36mKTP: Socket 1: New packet sent with sequence 130
+[0;31mKTP: Socket 0: Incoming packet deliberately dropped (simulated loss)
+[0;32mKTP: Socket 0: Data packet received with seq=130
+[0;32mKTP: Socket 0: Sending ACK, last_ack=128, window=10
+[0;32mKTP: Socket 1: ACK received, last_ack=128, window=10
+[0;32mKTP: Socket 1: Duplicate ACK 128, updating window only
+[0;36mKTP: Socket 1: New packet sent with sequence 131
+[0;36mKTP: Socket 1: New packet sent with sequence 132
+[0;36mKTP: Socket 1: New packet sent with sequence 133
+[0;36mKTP: Socket 1: New packet sent with sequence 134
+[0;36mKTP: Socket 1: New packet sent with sequence 135
+[0;36mKTP: Socket 1: New packet sent with sequence 136
+[0;36mKTP: Socket 1: New packet sent with sequence 137
+[0;36mKTP: Socket 1: New packet sent with sequence 138
+[0;32mKTP: Socket 0: Data packet received with seq=131
+[0;32mKTP: Socket 0: Sending ACK, last_ack=128, window=10
+[0;32mKTP: Socket 0: Data packet received with seq=132
+[0;32mKTP: Socket 0: Sending ACK, last_ack=128, window=10
+[0;32mKTP: Socket 0: Data packet received with seq=133
+[0;32mKTP: Socket 0: Sending ACK, last_ack=128, window=10
+[0;32mKTP: Socket 0: Data packet received with seq=134
+[0;32mKTP: Socket 0: Sending ACK, last_ack=128, window=10
+[0;32mKTP: Socket 1: ACK received, last_ack=128, window=10
+[0;32mKTP: Socket 1: Duplicate ACK 128, updating window only
+[0;32mKTP: Socket 0: Data packet received with seq=135
+[0;32mKTP: Socket 0: Sending ACK, last_ack=128, window=10
+[0;32mKTP: Socket 1: ACK received, last_ack=128, window=10
+[0;32mKTP: Socket 1: Duplicate ACK 128, updating window only
+[0;32mKTP: Socket 0: Data packet received with seq=136
+[0;32mKTP: Socket 0: Sending ACK, last_ack=128, window=10
+[0;32mKTP: Socket 1: ACK received, last_ack=128, window=10
+[0;32mKTP: Socket 1: Duplicate ACK 128, updating window only
+[0;32mKTP: Socket 0: Data packet received with seq=137
+[0;32mKTP: Socket 0: Sending ACK, last_ack=128, window=10
+[0;31mKTP: Socket 1: Incoming packet deliberately dropped (simulated loss)
+[0;32mKTP: Socket 0: Data packet received with seq=138
+[0;32mKTP: Socket 0: Sending ACK, last_ack=128, window=10
+[0;32mKTP: Socket 1: ACK received, last_ack=128, window=10
+[0;32mKTP: Socket 1: Duplicate ACK 128, updating window only
+[0;32mKTP: Socket 1: ACK received, last_ack=128, window=10
+[0;32mKTP: Socket 1: Duplicate ACK 128, updating window only
+[0;32mKTP: Socket 1: ACK received, last_ack=128, window=10
+[0;32mKTP: Socket 1: Duplicate ACK 128, updating window only
+[0;32mKTP: Socket 1: ACK received, last_ack=128, window=10
+[0;32mKTP: Socket 1: Duplicate ACK 128, updating window only
+[0;36mKTP: Socket 1: Timeout detected, retransmitting 10 pending packets
+[0;32mKTP: Socket 0: Data packet received with seq=129
+[0;32mKTP: Socket 0: Sending ACK, last_ack=138, window=0
+[0;32mKTP: Socket 0: Buffer now full after processing packet 129
+[0;32mKTP: Socket 0: Data packet received with seq=130
+[0;32mKTP: Socket 0: Sending ACK for duplicate packet, last_ack=138
+[0;32mKTP: Socket 1: ACK received, last_ack=138, window=0
+[0;32mKTP: Socket 1: Processing ACK for 10 packets up to seq 138
+[0;32mKTP: Socket 1: Window advanced, base=9, unacked=0
+[0;32mKTP: Socket 0: Data packet received with seq=131
+[0;32mKTP: Socket 0: Sending ACK for duplicate packet, last_ack=138
+[0;32mKTP: Socket 1: ACK received, last_ack=138, window=0
+[0;32mKTP: Socket 1: Duplicate ACK 138, updating window only
+[0;32mKTP: Socket 0: Data packet received with seq=132
+[0;32mKTP: Socket 0: Sending ACK for duplicate packet, last_ack=138
+[0;32mKTP: Socket 1: ACK received, last_ack=138, window=0
+[0;32mKTP: Socket 1: Duplicate ACK 138, updating window only
+[0;32mKTP: Socket 0: Data packet received with seq=133
+[0;32mKTP: Socket 0: Sending ACK for duplicate packet, last_ack=138
+[0;32mKTP: Socket 1: ACK received, last_ack=138, window=0
+[0;32mKTP: Socket 1: Duplicate ACK 138, updating window only
+[0;32mKTP: Socket 0: Data packet received with seq=134
+[0;32mKTP: Socket 0: Sending ACK for duplicate packet, last_ack=138
+[0;32mKTP: Socket 1: ACK received, last_ack=138, window=0
+[0;32mKTP: Socket 1: Duplicate ACK 138, updating window only
+[0;32mKTP: Socket 0: Data packet received with seq=135
+[0;32mKTP: Socket 0: Sending ACK for duplicate packet, last_ack=138
+[0;32mKTP: Socket 1: ACK received, last_ack=138, window=0
+[0;32mKTP: Socket 1: Duplicate ACK 138, updating window only
+[0;32mKTP: Socket 0: Data packet received with seq=136
+[0;32mKTP: Socket 0: Sending ACK for duplicate packet, last_ack=138
+[0;31mKTP: Socket 1: Incoming packet deliberately dropped (simulated loss)
+[0;32mKTP: Socket 0: Data packet received with seq=137
+[0;32mKTP: Socket 0: Sending ACK for duplicate packet, last_ack=138
+[0;32mKTP: Socket 1: ACK received, last_ack=138, window=0
+[0;32mKTP: Socket 1: Duplicate ACK 138, updating window only
+[0;32mKTP: Socket 0: Data packet received with seq=138
+[0;32mKTP: Socket 0: Sending ACK for duplicate packet, last_ack=138
+[0;32mKTP: Socket 1: ACK received, last_ack=138, window=0
+[0;32mKTP: Socket 1: Duplicate ACK 138, updating window only
+[0;32mKTP: Socket 1: ACK received, last_ack=138, window=0
+[0;32mKTP: Socket 1: Duplicate ACK 138, updating window only
+[0;32mKTP: Socket 0: Buffer space available, scheduling update ACKs
+[0;32mKTP: Socket 0: Sending capacity notification 1/10: ack=138, window=10
+[0;31mKTP: Socket 1: Incoming packet deliberately dropped (simulated loss)
+[0;32mKTP: Socket 0: Sending capacity notification 2/10: ack=138, window=10
+[0;32mKTP: Socket 1: ACK received, last_ack=138, window=10
+[0;32mKTP: Socket 1: Duplicate ACK 138, updating window only
+[0;32mKTP: Socket 0: Sending capacity notification 3/10: ack=138, window=10
+[0;32mKTP: Socket 1: ACK received, last_ack=138, window=10
+[0;32mKTP: Socket 1: Duplicate ACK 138, updating window only
+[0;32mKTP: Socket 0: Sending capacity notification 4/10: ack=138, window=10
+[0;32mKTP: Socket 1: ACK received, last_ack=138, window=10
+[0;32mKTP: Socket 1: Duplicate ACK 138, updating window only
+[0;32mKTP: Socket 0: Sending capacity notification 5/10: ack=138, window=10
+[0;32mKTP: Socket 1: ACK received, last_ack=138, window=10
+[0;32mKTP: Socket 1: Duplicate ACK 138, updating window only
+[0;32mKTP: Socket 0: Sending capacity notification 6/10: ack=138, window=10
+[0;32mKTP: Socket 1: ACK received, last_ack=138, window=10
+[0;32mKTP: Socket 1: Duplicate ACK 138, updating window only
+[0;32mKTP: Socket 0: Sending capacity notification 7/10: ack=138, window=10
+[0;32mKTP: Socket 1: ACK received, last_ack=138, window=10
+[0;32mKTP: Socket 1: Duplicate ACK 138, updating window only
+[0;32mKTP: Socket 0: Sending capacity notification 8/10: ack=138, window=10
+[0;32mKTP: Socket 1: ACK received, last_ack=138, window=10
+[0;32mKTP: Socket 1: Duplicate ACK 138, updating window only
+[0;32mKTP: Socket 0: Sending capacity notification 9/10: ack=138, window=10
+[0;32mKTP: Socket 1: ACK received, last_ack=138, window=10
+[0;32mKTP: Socket 1: Duplicate ACK 138, updating window only
+[0;32mKTP: Socket 0: Sending capacity notification 10/10: ack=138, window=10
+[0;32mKTP: Socket 1: ACK received, last_ack=138, window=10
+[0;32mKTP: Socket 1: Duplicate ACK 138, updating window only
+[0;36mKTP: Socket 1: New packet sent with sequence 139
+[0;36mKTP: Socket 1: New packet sent with sequence 140
+[0;36mKTP: Socket 1: New packet sent with sequence 141
+[0;36mKTP: Socket 1: New packet sent with sequence 142
+[0;36mKTP: Socket 1: New packet sent with sequence 143
+[0;36mKTP: Socket 1: New packet sent with sequence 144
+[0;32mKTP: Socket 0: Data packet received with seq=139
+[0;32mKTP: Socket 0: Sending ACK, last_ack=139, window=9
+[0;36mKTP: Socket 1: New packet sent with sequence 145
+[0;36mKTP: Socket 1: New packet sent with sequence 146
+[0;36mKTP: Socket 1: New packet sent with sequence 147
+[0;32mKTP: Socket 0: Data packet received with seq=140
+[0;32mKTP: Socket 0: Sending ACK, last_ack=140, window=8
+[0;36mKTP: Socket 1: New packet sent with sequence 148
+[0;32mKTP: Socket 0: Data packet received with seq=141
+[0;32mKTP: Socket 0: Sending ACK, last_ack=141, window=7
+[0;32mKTP: Socket 1: ACK received, last_ack=139, window=9
+[0;32mKTP: Socket 1: Processing ACK for 1 packets up to seq 139
+[0;32mKTP: Socket 1: Window advanced, base=0, unacked=9
+[0;32mKTP: Socket 0: Data packet received with seq=142
+[0;32mKTP: Socket 0: Sending ACK, last_ack=142, window=6
+[0;32mKTP: Socket 1: ACK received, last_ack=140, window=8
+[0;32mKTP: Socket 1: Processing ACK for 1 packets up to seq 140
+[0;32mKTP: Socket 1: Window advanced, base=1, unacked=8
+[0;32mKTP: Socket 0: Data packet received with seq=143
+[0;32mKTP: Socket 0: Sending ACK, last_ack=143, window=5
+[0;32mKTP: Socket 1: ACK received, last_ack=141, window=7
+[0;32mKTP: Socket 1: Processing ACK for 1 packets up to seq 141
+[0;32mKTP: Socket 1: Window advanced, base=2, unacked=7
+[0;32mKTP: Socket 0: Data packet received with seq=144
+[0;32mKTP: Socket 0: Sending ACK, last_ack=144, window=4
+[0;32mKTP: Socket 1: ACK received, last_ack=142, window=6
+[0;32mKTP: Socket 1: Processing ACK for 1 packets up to seq 142
+[0;32mKTP: Socket 1: Window advanced, base=3, unacked=6
+[0;32mKTP: Socket 0: Data packet received with seq=145
+[0;32mKTP: Socket 0: Sending ACK, last_ack=145, window=3
+[0;32mKTP: Socket 1: ACK received, last_ack=143, window=5
+[0;32mKTP: Socket 1: Processing ACK for 1 packets up to seq 143
+[0;32mKTP: Socket 1: Window advanced, base=4, unacked=5
+[0;32mKTP: Socket 0: Data packet received with seq=146
+[0;32mKTP: Socket 0: Sending ACK, last_ack=146, window=2
+[0;32mKTP: Socket 1: ACK received, last_ack=144, window=4
+[0;32mKTP: Socket 1: Processing ACK for 1 packets up to seq 144
+[0;32mKTP: Socket 1: Window advanced, base=5, unacked=4
+[0;32mKTP: Socket 0: Data packet received with seq=147
+[0;32mKTP: Socket 0: Sending ACK, last_ack=147, window=1
+[0;32mKTP: Socket 1: ACK received, last_ack=145, window=3
+[0;32mKTP: Socket 1: Processing ACK for 1 packets up to seq 145
+[0;32mKTP: Socket 1: Window advanced, base=6, unacked=3
+[0;32mKTP: Socket 0: Data packet received with seq=148
+[0;32mKTP: Socket 0: Sending ACK, last_ack=148, window=0
+[0;32mKTP: Socket 0: Buffer now full after processing packet 148
+[0;31mKTP: Socket 1: Incoming packet deliberately dropped (simulated loss)
+[0;32mKTP: Socket 1: ACK received, last_ack=147, window=1
+[0;32mKTP: Socket 1: Processing ACK for 2 packets up to seq 147
+[0;32mKTP: Socket 1: Window advanced, base=8, unacked=1
+[0;32mKTP: Socket 1: ACK received, last_ack=148, window=0
+[0;32mKTP: Socket 1: Processing ACK for 1 packets up to seq 148
+[0;32mKTP: Socket 1: Window advanced, base=9, unacked=0
+[0;32mKTP: Socket 0: Buffer space available, scheduling update ACKs
+[0;32mKTP: Socket 0: Sending capacity notification 1/10: ack=148, window=10
+[0;31mKTP: Socket 1: Incoming packet deliberately dropped (simulated loss)
+[0;32mKTP: Socket 0: Sending capacity notification 2/10: ack=148, window=10
+[0;32mKTP: Socket 1: ACK received, last_ack=148, window=10
+[0;32mKTP: Socket 1: Duplicate ACK 148, updating window only
+[0;32mKTP: Socket 0: Sending capacity notification 3/10: ack=148, window=10
+[0;32mKTP: Socket 1: ACK received, last_ack=148, window=10
+[0;32mKTP: Socket 1: Duplicate ACK 148, updating window only
+[0;32mKTP: Socket 0: Sending capacity notification 4/10: ack=148, window=10
+[0;32mKTP: Socket 1: ACK received, last_ack=148, window=10
+[0;32mKTP: Socket 1: Duplicate ACK 148, updating window only
+[0;32mKTP: Socket 0: Sending capacity notification 5/10: ack=148, window=10
+[0;32mKTP: Socket 1: ACK received, last_ack=148, window=10
+[0;32mKTP: Socket 1: Duplicate ACK 148, updating window only
+[0;32mKTP: Socket 0: Sending capacity notification 6/10: ack=148, window=10
+[0;32mKTP: Socket 1: ACK received, last_ack=148, window=10
+[0;32mKTP: Socket 1: Duplicate ACK 148, updating window only
+[0;32mKTP: Socket 0: Sending capacity notification 7/10: ack=148, window=10
+[0;32mKTP: Socket 1: ACK received, last_ack=148, window=10
+[0;32mKTP: Socket 1: Duplicate ACK 148, updating window only
+[0;32mKTP: Socket 0: Sending capacity notification 8/10: ack=148, window=10
+[0;32mKTP: Socket 1: ACK received, last_ack=148, window=10
+[0;32mKTP: Socket 1: Duplicate ACK 148, updating window only
+[0;32mKTP: Socket 0: Sending capacity notification 9/10: ack=148, window=10
+[0;32mKTP: Socket 1: ACK received, last_ack=148, window=10
+[0;32mKTP: Socket 1: Duplicate ACK 148, updating window only
+[0;32mKTP: Socket 0: Sending capacity notification 10/10: ack=148, window=10
+[0;32mKTP: Socket 1: ACK received, last_ack=148, window=10
+[0;32mKTP: Socket 1: Duplicate ACK 148, updating window only
+[0;36mKTP: Socket 1: New packet sent with sequence 149
+[0;36mKTP: Socket 1: New packet sent with sequence 150
+[0;36mKTP: Socket 1: New packet sent with sequence 151
+[0;36mKTP: Socket 1: New packet sent with sequence 152
+[0;36mKTP: Socket 1: New packet sent with sequence 153
+[0;32mKTP: Socket 0: Data packet received with seq=149
+[0;32mKTP: Socket 0: Sending ACK, last_ack=149, window=9
+[0;36mKTP: Socket 1: New packet sent with sequence 154
+[0;36mKTP: Socket 1: New packet sent with sequence 155
+[0;36mKTP: Socket 1: New packet sent with sequence 156
+[0;32mKTP: Socket 0: Data packet received with seq=150
+[0;32mKTP: Socket 0: Sending ACK, last_ack=150, window=8
+[0;36mKTP: Socket 1: New packet sent with sequence 157
+[0;36mKTP: Socket 1: New packet sent with sequence 158
+[0;32mKTP: Socket 0: Data packet received with seq=151
+[0;32mKTP: Socket 0: Sending ACK, last_ack=151, window=7
+[0;32mKTP: Socket 0: Data packet received with seq=152
+[0;32mKTP: Socket 0: Sending ACK, last_ack=152, window=6
+[0;32mKTP: Socket 1: ACK received, last_ack=149, window=9
+[0;32mKTP: Socket 1: Processing ACK for 1 packets up to seq 149
+[0;32mKTP: Socket 1: Window advanced, base=0, unacked=9
+[0;32mKTP: Socket 0: Data packet received with seq=153
+[0;32mKTP: Socket 0: Sending ACK, last_ack=153, window=5
+[0;32mKTP: Socket 1: ACK received, last_ack=150, window=8
+[0;32mKTP: Socket 1: Processing ACK for 1 packets up to seq 150
+[0;32mKTP: Socket 1: Window advanced, base=1, unacked=8
+[0;32mKTP: Socket 0: Data packet received with seq=154
+[0;32mKTP: Socket 0: Sending ACK, last_ack=154, window=4
+[0;32mKTP: Socket 1: ACK received, last_ack=151, window=7
+[0;32mKTP: Socket 1: Processing ACK for 1 packets up to seq 151
+[0;32mKTP: Socket 1: Window advanced, base=2, unacked=7
+[0;32mKTP: Socket 0: Data packet received with seq=155
+[0;32mKTP: Socket 0: Sending ACK, last_ack=155, window=3
+[0;32mKTP: Socket 1: ACK received, last_ack=152, window=6
+[0;32mKTP: Socket 1: Processing ACK for 1 packets up to seq 152
+[0;32mKTP: Socket 1: Window advanced, base=3, unacked=6
+[0;32mKTP: Socket 0: Data packet received with seq=156
+[0;32mKTP: Socket 0: Sending ACK, last_ack=156, window=2
+[0;32mKTP: Socket 1: ACK received, last_ack=153, window=5
+[0;32mKTP: Socket 1: Processing ACK for 1 packets up to seq 153
+[0;32mKTP: Socket 1: Window advanced, base=4, unacked=5
+[0;32mKTP: Socket 0: Data packet received with seq=157
+[0;32mKTP: Socket 0: Sending ACK, last_ack=157, window=1
+[0;32mKTP: Socket 1: ACK received, last_ack=154, window=4
+[0;32mKTP: Socket 1: Processing ACK for 1 packets up to seq 154
+[0;32mKTP: Socket 1: Window advanced, base=5, unacked=4
+[0;32mKTP: Socket 0: Data packet received with seq=158
+[0;32mKTP: Socket 0: Sending ACK, last_ack=158, window=0
+[0;32mKTP: Socket 0: Buffer now full after processing packet 158
+[0;32mKTP: Socket 1: ACK received, last_ack=155, window=3
+[0;32mKTP: Socket 1: Processing ACK for 1 packets up to seq 155
+[0;32mKTP: Socket 1: Window advanced, base=6, unacked=3
+[0;32mKTP: Socket 1: ACK received, last_ack=156, window=2
+[0;32mKTP: Socket 1: Processing ACK for 1 packets up to seq 156
+[0;32mKTP: Socket 1: Window advanced, base=7, unacked=2
+[0;32mKTP: Socket 1: ACK received, last_ack=157, window=1
+[0;32mKTP: Socket 1: Processing ACK for 1 packets up to seq 157
+[0;32mKTP: Socket 1: Window advanced, base=8, unacked=1
+[0;31mKTP: Socket 1: Incoming packet deliberately dropped (simulated loss)
+[0;32mKTP: Socket 0: Buffer space available, scheduling update ACKs
+[0;32mKTP: Socket 0: Sending capacity notification 1/10: ack=158, window=10
+[0;32mKTP: Socket 1: ACK received, last_ack=158, window=10
+[0;32mKTP: Socket 1: Processing ACK for 1 packets up to seq 158
+[0;32mKTP: Socket 1: Window advanced, base=9, unacked=0
+[0;32mKTP: Socket 0: Sending capacity notification 2/10: ack=158, window=10
+[0;32mKTP: Socket 1: ACK received, last_ack=158, window=10
+[0;32mKTP: Socket 1: Duplicate ACK 158, updating window only
+[0;32mKTP: Socket 0: Sending capacity notification 3/10: ack=158, window=10
+[0;32mKTP: Socket 1: ACK received, last_ack=158, window=10
+[0;32mKTP: Socket 1: Duplicate ACK 158, updating window only
+[0;32mKTP: Socket 0: Sending capacity notification 4/10: ack=158, window=10
+[0;32mKTP: Socket 1: ACK received, last_ack=158, window=10
+[0;32mKTP: Socket 1: Duplicate ACK 158, updating window only
+[0;32mKTP: Socket 0: Sending capacity notification 5/10: ack=158, window=10
+[0;32mKTP: Socket 1: ACK received, last_ack=158, window=10
+[0;32mKTP: Socket 1: Duplicate ACK 158, updating window only
+[0;32mKTP: Socket 0: Sending capacity notification 6/10: ack=158, window=10
+[0;32mKTP: Socket 1: ACK received, last_ack=158, window=10
+[0;32mKTP: Socket 1: Duplicate ACK 158, updating window only
+[0;32mKTP: Socket 0: Sending capacity notification 7/10: ack=158, window=10
+[0;32mKTP: Socket 1: ACK received, last_ack=158, window=10
+[0;32mKTP: Socket 1: Duplicate ACK 158, updating window only
+[0;32mKTP: Socket 0: Sending capacity notification 8/10: ack=158, window=10
+[0;32mKTP: Socket 1: ACK received, last_ack=158, window=10
+[0;32mKTP: Socket 1: Duplicate ACK 158, updating window only
+[0;32mKTP: Socket 0: Sending capacity notification 9/10: ack=158, window=10
+[0;32mKTP: Socket 1: ACK received, last_ack=158, window=10
+[0;32mKTP: Socket 1: Duplicate ACK 158, updating window only
+[0;32mKTP: Socket 0: Sending capacity notification 10/10: ack=158, window=10
+[0;32mKTP: Socket 1: ACK received, last_ack=158, window=10
+[0;32mKTP: Socket 1: Duplicate ACK 158, updating window only
+[0;36mKTP: Socket 1: New packet sent with sequence 159
+[0;36mKTP: Socket 1: New packet sent with sequence 160
+[0;36mKTP: Socket 1: New packet sent with sequence 161
+[0;36mKTP: Socket 1: New packet sent with sequence 162
+[0;36mKTP: Socket 1: New packet sent with sequence 163
+[0;32mKTP: Socket 0: Data packet received with seq=159
+[0;32mKTP: Socket 0: Sending ACK, last_ack=159, window=9
+[0;36mKTP: Socket 1: New packet sent with sequence 164
+[0;36mKTP: Socket 1: New packet sent with sequence 165
+[0;36mKTP: Socket 1: New packet sent with sequence 166
+[0;32mKTP: Socket 0: Data packet received with seq=160
+[0;32mKTP: Socket 0: Sending ACK, last_ack=160, window=8
+[0;36mKTP: Socket 1: New packet sent with sequence 167
+[0;36mKTP: Socket 1: New packet sent with sequence 168
+[0;31mKTP: Socket 0: Incoming packet deliberately dropped (simulated loss)
+[0;32mKTP: Socket 1: ACK received, last_ack=159, window=9
+[0;32mKTP: Socket 1: Processing ACK for 1 packets up to seq 159
+[0;32mKTP: Socket 1: Window advanced, base=0, unacked=9
+[0;32mKTP: Socket 0: Data packet received with seq=162
+[0;32mKTP: Socket 0: Sending ACK, last_ack=160, window=8
+[0;32mKTP: Socket 1: ACK received, last_ack=160, window=8
+[0;32mKTP: Socket 1: Processing ACK for 1 packets up to seq 160
+[0;32mKTP: Socket 1: Window advanced, base=1, unacked=8
+[0;32mKTP: Socket 0: Data packet received with seq=163
+[0;32mKTP: Socket 0: Sending ACK, last_ack=160, window=8
+[0;31mKTP: Socket 1: Incoming packet deliberately dropped (simulated loss)
+[0;32mKTP: Socket 0: Data packet received with seq=164
+[0;32mKTP: Socket 0: Sending ACK, last_ack=160, window=8
+[0;32mKTP: Socket 1: ACK received, last_ack=160, window=8
+[0;32mKTP: Socket 1: Duplicate ACK 160, updating window only
+[0;32mKTP: Socket 0: Data packet received with seq=165
+[0;32mKTP: Socket 0: Sending ACK, last_ack=160, window=8
+[0;32mKTP: Socket 1: ACK received, last_ack=160, window=8
+[0;32mKTP: Socket 1: Duplicate ACK 160, updating window only
+[0;32mKTP: Socket 0: Data packet received with seq=166
+[0;32mKTP: Socket 0: Sending ACK, last_ack=160, window=8
+[0;32mKTP: Socket 1: ACK received, last_ack=160, window=8
+[0;32mKTP: Socket 1: Duplicate ACK 160, updating window only
+[0;32mKTP: Socket 0: Data packet received with seq=167
+[0;32mKTP: Socket 0: Sending ACK, last_ack=160, window=8
+[0;32mKTP: Socket 1: ACK received, last_ack=160, window=8
+[0;32mKTP: Socket 1: Duplicate ACK 160, updating window only
+[0;31mKTP: Socket 0: Incoming packet deliberately dropped (simulated loss)
+[0;32mKTP: Socket 1: ACK received, last_ack=160, window=8
+[0;32mKTP: Socket 1: Duplicate ACK 160, updating window only
+[0;36mKTP: Socket 1: Timeout detected, retransmitting 8 pending packets
+[0;32mKTP: Socket 0: Data packet received with seq=161
+[0;32mKTP: Socket 0: Sending ACK, last_ack=167, window=3
+[0;32mKTP: Socket 0: Data packet received with seq=162
+[0;32mKTP: Socket 0: Sending ACK for duplicate packet, last_ack=167
+[0;32mKTP: Socket 1: ACK received, last_ack=167, window=3
+[0;32mKTP: Socket 1: Processing ACK for 7 packets up to seq 167
+[0;32mKTP: Socket 1: Window advanced, base=8, unacked=1
+[0;32mKTP: Socket 0: Data packet received with seq=163
+[0;32mKTP: Socket 0: Sending ACK for duplicate packet, last_ack=167
+[0;32mKTP: Socket 1: ACK received, last_ack=167, window=3
+[0;32mKTP: Socket 1: Duplicate ACK 167, updating window only
+[0;32mKTP: Socket 0: Data packet received with seq=164
+[0;32mKTP: Socket 0: Sending ACK for duplicate packet, last_ack=167
+[0;32mKTP: Socket 1: ACK received, last_ack=167, window=3
+[0;32mKTP: Socket 1: Duplicate ACK 167, updating window only
+[0;32mKTP: Socket 0: Data packet received with seq=165
+[0;32mKTP: Socket 0: Sending ACK for duplicate packet, last_ack=167
+[0;32mKTP: Socket 1: ACK received, last_ack=167, window=3
+[0;32mKTP: Socket 1: Duplicate ACK 167, updating window only
+[0;32mKTP: Socket 0: Data packet received with seq=166
+[0;32mKTP: Socket 0: Sending ACK for duplicate packet, last_ack=167
+[0;32mKTP: Socket 1: ACK received, last_ack=167, window=3
+[0;32mKTP: Socket 1: Duplicate ACK 167, updating window only
+[0;32mKTP: Socket 0: Data packet received with seq=167
+[0;32mKTP: Socket 0: Sending ACK for duplicate packet, last_ack=167
+[0;32mKTP: Socket 1: ACK received, last_ack=167, window=3
+[0;32mKTP: Socket 1: Duplicate ACK 167, updating window only
+[0;31mKTP: Socket 0: Incoming packet deliberately dropped (simulated loss)
+[0;32mKTP: Socket 1: ACK received, last_ack=167, window=3
+[0;32mKTP: Socket 1: Duplicate ACK 167, updating window only
+[0;36mKTP: Socket 1: New packet sent with sequence 169
+[0;36mKTP: Socket 1: New packet sent with sequence 170
+[0;32mKTP: Socket 0: Data packet received with seq=169
+[0;32mKTP: Socket 0: Sending ACK, last_ack=167, window=10
+[0;31mKTP: Socket 0: Incoming packet deliberately dropped (simulated loss)
+[0;32mKTP: Socket 1: ACK received, last_ack=167, window=10
+[0;32mKTP: Socket 1: Duplicate ACK 167, updating window only
+[0;36mKTP: Socket 1: Timeout detected, retransmitting 3 pending packets
+[0;36mKTP: Socket 1: New packet sent with sequence 171
+[0;36mKTP: Socket 1: New packet sent with sequence 172
+[0;36mKTP: Socket 1: New packet sent with sequence 173
+[0;32mKTP: Socket 0: Data packet received with seq=168
+[0;32mKTP: Socket 0: Sending ACK, last_ack=169, window=8
+[0;36mKTP: Socket 1: New packet sent with sequence 174
+[0;36mKTP: Socket 1: New packet sent with sequence 175
+[0;36mKTP: Socket 1: New packet sent with sequence 176
+[0;36mKTP: Socket 1: New packet sent with sequence 177
+[0;32mKTP: Socket 0: Data packet received with seq=169
+[0;32mKTP: Socket 0: Sending ACK for duplicate packet, last_ack=169
+[0;32mKTP: Socket 0: Data packet received with seq=170
+[0;32mKTP: Socket 0: Sending ACK, last_ack=170, window=7
+[0;32mKTP: Socket 1: ACK received, last_ack=169, window=8
+[0;32mKTP: Socket 1: Processing ACK for 2 packets up to seq 169
+[0;32mKTP: Socket 1: Window advanced, base=0, unacked=8
+[0;31mKTP: Socket 0: Incoming packet deliberately dropped (simulated loss)
+[0;32mKTP: Socket 1: ACK received, last_ack=169, window=8
+[0;32mKTP: Socket 1: Duplicate ACK 169, updating window only
+[0;32mKTP: Socket 0: Data packet received with seq=172
+[0;32mKTP: Socket 0: Sending ACK, last_ack=170, window=7
+[0;32mKTP: Socket 1: ACK received, last_ack=170, window=7
+[0;32mKTP: Socket 1: Processing ACK for 1 packets up to seq 170
+[0;32mKTP: Socket 1: Window advanced, base=1, unacked=7
+[0;32mKTP: Socket 0: Data packet received with seq=173
+[0;32mKTP: Socket 0: Sending ACK, last_ack=170, window=7
+[0;32mKTP: Socket 1: ACK received, last_ack=170, window=7
+[0;32mKTP: Socket 1: Duplicate ACK 170, updating window only
+[0;32mKTP: Socket 0: Data packet received with seq=174
+[0;32mKTP: Socket 0: Sending ACK, last_ack=170, window=7
+[0;32mKTP: Socket 1: ACK received, last_ack=170, window=7
+[0;32mKTP: Socket 1: Duplicate ACK 170, updating window only
+[0;32mKTP: Socket 0: Data packet received with seq=175
+[0;32mKTP: Socket 0: Sending ACK, last_ack=170, window=7
+[0;32mKTP: Socket 1: ACK received, last_ack=170, window=7
+[0;32mKTP: Socket 1: Duplicate ACK 170, updating window only
+[0;32mKTP: Socket 0: Data packet received with seq=176
+[0;32mKTP: Socket 0: Sending ACK, last_ack=170, window=7
+[0;32mKTP: Socket 1: ACK received, last_ack=170, window=7
+[0;32mKTP: Socket 1: Duplicate ACK 170, updating window only
+[0;32mKTP: Socket 0: Data packet received with seq=177
+[0;32mKTP: Socket 0: Sending ACK, last_ack=170, window=7
+[0;32mKTP: Socket 1: ACK received, last_ack=170, window=7
+[0;32mKTP: Socket 1: Duplicate ACK 170, updating window only
+[0;32mKTP: Socket 1: ACK received, last_ack=170, window=7
+[0;32mKTP: Socket 1: Duplicate ACK 170, updating window only
+[0;36mKTP: Socket 1: Timeout detected, retransmitting 7 pending packets
+[0;32mKTP: Socket 0: Data packet received with seq=171
+[0;32mKTP: Socket 0: Sending ACK, last_ack=177, window=3
+[0;32mKTP: Socket 0: Data packet received with seq=172
+[0;32mKTP: Socket 0: Sending ACK for duplicate packet, last_ack=177
+[0;32mKTP: Socket 1: ACK received, last_ack=177, window=3
+[0;32mKTP: Socket 1: Processing ACK for 7 packets up to seq 177
+[0;32mKTP: Socket 1: Window advanced, base=8, unacked=0
+[0;32mKTP: Socket 0: Data packet received with seq=173
+[0;32mKTP: Socket 0: Sending ACK for duplicate packet, last_ack=177
+[0;32mKTP: Socket 1: ACK received, last_ack=177, window=3
+[0;32mKTP: Socket 1: Duplicate ACK 177, updating window only
+[0;32mKTP: Socket 0: Data packet received with seq=174
+[0;32mKTP: Socket 0: Sending ACK for duplicate packet, last_ack=177
+[0;32mKTP: Socket 1: ACK received, last_ack=177, window=3
+[0;32mKTP: Socket 1: Duplicate ACK 177, updating window only
+[0;32mKTP: Socket 0: Data packet received with seq=175
+[0;32mKTP: Socket 0: Sending ACK for duplicate packet, last_ack=177
+[0;32mKTP: Socket 1: ACK received, last_ack=177, window=3
+[0;32mKTP: Socket 1: Duplicate ACK 177, updating window only
+[0;32mKTP: Socket 0: Data packet received with seq=176
+[0;32mKTP: Socket 0: Sending ACK for duplicate packet, last_ack=177
+[0;32mKTP: Socket 1: ACK received, last_ack=177, window=3
+[0;32mKTP: Socket 1: Duplicate ACK 177, updating window only
+[0;32mKTP: Socket 0: Data packet received with seq=177
+[0;32mKTP: Socket 0: Sending ACK for duplicate packet, last_ack=177
+[0;32mKTP: Socket 1: ACK received, last_ack=177, window=3
+[0;32mKTP: Socket 1: Duplicate ACK 177, updating window only
+[0;32mKTP: Socket 1: ACK received, last_ack=177, window=3
+[0;32mKTP: Socket 1: Duplicate ACK 177, updating window only
+[0;36mKTP: Socket 1: New packet sent with sequence 178
+[0;36mKTP: Socket 1: New packet sent with sequence 179
+[0;36mKTP: Socket 1: New packet sent with sequence 180
+[0;32mKTP: Socket 0: Data packet received with seq=178
+[0;32mKTP: Socket 0: Sending ACK, last_ack=178, window=9
+[0;31mKTP: Socket 0: Incoming packet deliberately dropped (simulated loss)
+[0;32mKTP: Socket 1: ACK received, last_ack=178, window=9
+[0;32mKTP: Socket 1: Processing ACK for 1 packets up to seq 178
+[0;32mKTP: Socket 1: Window advanced, base=9, unacked=2
+[0;32mKTP: Socket 0: Data packet received with seq=180
+[0;32mKTP: Socket 0: Sending ACK, last_ack=178, window=9
+[0;32mKTP: Socket 1: ACK received, last_ack=178, window=9
+[0;32mKTP: Socket 1: Duplicate ACK 178, updating window only
+[0;36mKTP: Socket 1: New packet sent with sequence 181
+[0;36mKTP: Socket 1: New packet sent with sequence 182
+[0;36mKTP: Socket 1: New packet sent with sequence 183
+[0;36mKTP: Socket 1: New packet sent with sequence 184
+[0;36mKTP: Socket 1: New packet sent with sequence 185
+[0;32mKTP: Socket 0: Data packet received with seq=181
+[0;32mKTP: Socket 0: Sending ACK, last_ack=178, window=10
+[0;36mKTP: Socket 1: New packet sent with sequence 186
+[0;36mKTP: Socket 1: New packet sent with sequence 187
+[0;32mKTP: Socket 0: Data packet received with seq=182
+[0;32mKTP: Socket 0: Sending ACK, last_ack=178, window=10
+[0;32mKTP: Socket 1: ACK received, last_ack=178, window=10
+[0;32mKTP: Socket 1: Duplicate ACK 178, updating window only
+[0;32mKTP: Socket 0: Data packet received with seq=183
+[0;32mKTP: Socket 0: Sending ACK, last_ack=178, window=10
+[0;31mKTP: Socket 1: Incoming packet deliberately dropped (simulated loss)
+[0;32mKTP: Socket 0: Data packet received with seq=184
+[0;32mKTP: Socket 0: Sending ACK, last_ack=178, window=10
+[0;32mKTP: Socket 1: ACK received, last_ack=178, window=10
+[0;32mKTP: Socket 1: Duplicate ACK 178, updating window only
+[0;32mKTP: Socket 0: Data packet received with seq=185
+[0;32mKTP: Socket 0: Sending ACK, last_ack=178, window=10
+[0;32mKTP: Socket 1: ACK received, last_ack=178, window=10
+[0;32mKTP: Socket 1: Duplicate ACK 178, updating window only
+[0;32mKTP: Socket 0: Data packet received with seq=186
+[0;32mKTP: Socket 0: Sending ACK, last_ack=178, window=10
+[0;32mKTP: Socket 1: ACK received, last_ack=178, window=10
+[0;32mKTP: Socket 1: Duplicate ACK 178, updating window only
+[0;32mKTP: Socket 0: Data packet received with seq=187
+[0;32mKTP: Socket 0: Sending ACK, last_ack=178, window=10
+[0;32mKTP: Socket 1: ACK received, last_ack=178, window=10
+[0;32mKTP: Socket 1: Duplicate ACK 178, updating window only
+[0;31mKTP: Socket 1: Incoming packet deliberately dropped (simulated loss)
+[0;36mKTP: Socket 1: Timeout detected, retransmitting 9 pending packets
+[0;32mKTP: Socket 0: Data packet received with seq=179
+[0;32mKTP: Socket 0: Sending ACK, last_ack=187, window=1
+[0;36mKTP: Socket 1: New packet sent with sequence 188
+[0;32mKTP: Socket 0: Data packet received with seq=180
+[0;32mKTP: Socket 0: Sending ACK for duplicate packet, last_ack=187
+[0;32mKTP: Socket 0: Data packet received with seq=181
+[0;32mKTP: Socket 0: Sending ACK for duplicate packet, last_ack=187
+[0;32mKTP: Socket 1: ACK received, last_ack=187, window=1
+[0;32mKTP: Socket 1: Processing ACK for 9 packets up to seq 187
+[0;32mKTP: Socket 1: Window advanced, base=8, unacked=1
+[0;32mKTP: Socket 0: Data packet received with seq=182
+[0;32mKTP: Socket 0: Sending ACK for duplicate packet, last_ack=187
+[0;32mKTP: Socket 1: ACK received, last_ack=187, window=1
+[0;32mKTP: Socket 1: Duplicate ACK 187, updating window only
+[0;32mKTP: Socket 0: Data packet received with seq=183
+[0;32mKTP: Socket 0: Sending ACK for duplicate packet, last_ack=187
+[0;32mKTP: Socket 1: ACK received, last_ack=187, window=1
+[0;32mKTP: Socket 1: Duplicate ACK 187, updating window only
+[0;31mKTP: Socket 0: Incoming packet deliberately dropped (simulated loss)
+[0;31mKTP: Socket 1: Incoming packet deliberately dropped (simulated loss)
+[0;31mKTP: Socket 0: Incoming packet deliberately dropped (simulated loss)
+[0;32mKTP: Socket 1: ACK received, last_ack=187, window=1
+[0;32mKTP: Socket 1: Duplicate ACK 187, updating window only
+[0;32mKTP: Socket 0: Data packet received with seq=186
+[0;32mKTP: Socket 0: Sending ACK for duplicate packet, last_ack=187
+[0;32mKTP: Socket 0: Data packet received with seq=187
+[0;32mKTP: Socket 0: Sending ACK for duplicate packet, last_ack=187
+[0;32mKTP: Socket 0: Data packet received with seq=188
+[0;32mKTP: Socket 0: Sending ACK, last_ack=188, window=0
+[0;32mKTP: Socket 0: Buffer now full after processing packet 188
+[0;32mKTP: Socket 1: ACK received, last_ack=187, window=1
+[0;32mKTP: Socket 1: Duplicate ACK 187, updating window only
+[0;32mKTP: Socket 1: ACK received, last_ack=187, window=1
+[0;32mKTP: Socket 1: Duplicate ACK 187, updating window only
+[0;31mKTP: Socket 1: Incoming packet deliberately dropped (simulated loss)
+[0;32mKTP: Socket 0: Buffer space available, scheduling update ACKs
+[0;32mKTP: Socket 0: Sending capacity notification 1/10: ack=188, window=10
+[0;32mKTP: Socket 1: ACK received, last_ack=188, window=10
+[0;32mKTP: Socket 1: Processing ACK for 1 packets up to seq 188
+[0;32mKTP: Socket 1: Window advanced, base=9, unacked=0
+[0;32mKTP: Socket 0: Sending capacity notification 2/10: ack=188, window=10
+[0;32mKTP: Socket 1: ACK received, last_ack=188, window=10
+[0;32mKTP: Socket 1: Duplicate ACK 188, updating window only
+[0;32mKTP: Socket 0: Sending capacity notification 3/10: ack=188, window=10
+[0;32mKTP: Socket 1: ACK received, last_ack=188, window=10
+[0;32mKTP: Socket 1: Duplicate ACK 188, updating window only
+[0;32mKTP: Socket 0: Sending capacity notification 4/10: ack=188, window=10
+[0;32mKTP: Socket 1: ACK received, last_ack=188, window=10
+[0;32mKTP: Socket 1: Duplicate ACK 188, updating window only
+[0;32mKTP: Socket 0: Sending capacity notification 5/10: ack=188, window=10
+[0;32mKTP: Socket 1: ACK received, last_ack=188, window=10
+[0;32mKTP: Socket 1: Duplicate ACK 188, updating window only
+[0;32mKTP: Socket 0: Sending capacity notification 6/10: ack=188, window=10
+[0;32mKTP: Socket 1: ACK received, last_ack=188, window=10
+[0;32mKTP: Socket 1: Duplicate ACK 188, updating window only
+[0;32mKTP: Socket 0: Sending capacity notification 7/10: ack=188, window=10
+[0;32mKTP: Socket 1: ACK received, last_ack=188, window=10
+[0;32mKTP: Socket 1: Duplicate ACK 188, updating window only
+[0;32mKTP: Socket 0: Sending capacity notification 8/10: ack=188, window=10
+[0;32mKTP: Socket 1: ACK received, last_ack=188, window=10
+[0;32mKTP: Socket 1: Duplicate ACK 188, updating window only
+[0;32mKTP: Socket 0: Sending capacity notification 9/10: ack=188, window=10
+[0;32mKTP: Socket 1: ACK received, last_ack=188, window=10
+[0;32mKTP: Socket 1: Duplicate ACK 188, updating window only
+[0;32mKTP: Socket 0: Sending capacity notification 10/10: ack=188, window=10
+[0;31mKTP: Socket 1: Incoming packet deliberately dropped (simulated loss)
+[0;36mKTP: Socket 1: New packet sent with sequence 189
+[0;36mKTP: Socket 1: New packet sent with sequence 190
+[0;36mKTP: Socket 1: New packet sent with sequence 191
+[0;36mKTP: Socket 1: New packet sent with sequence 192
+[0;36mKTP: Socket 1: New packet sent with sequence 193
+[0;36mKTP: Socket 1: New packet sent with sequence 194
+[0;32mKTP: Socket 0: Data packet received with seq=189
+[0;36mKTP: Socket 1: New packet sent with sequence 195
+[0;32mKTP: Socket 0: Sending ACK, last_ack=189, window=9
+[0;36mKTP: Socket 1: New packet sent with sequence 196
+[0;36mKTP: Socket 1: New packet sent with sequence 197
+[0;36mKTP: Socket 1: New packet sent with sequence 198
+[0;32mKTP: Socket 0: Data packet received with seq=190
+[0;32mKTP: Socket 0: Sending ACK, last_ack=190, window=8
+[0;32mKTP: Socket 0: Data packet received with seq=191
+[0;32mKTP: Socket 0: Sending ACK, last_ack=191, window=7
+[0;32mKTP: Socket 1: ACK received, last_ack=189, window=9
+[0;32mKTP: Socket 1: Processing ACK for 1 packets up to seq 189
+[0;32mKTP: Socket 1: Window advanced, base=0, unacked=9
+[0;32mKTP: Socket 0: Data packet received with seq=192
+[0;32mKTP: Socket 0: Sending ACK, last_ack=192, window=6
+[0;32mKTP: Socket 1: ACK received, last_ack=190, window=8
+[0;32mKTP: Socket 1: Processing ACK for 1 packets up to seq 190
+[0;32mKTP: Socket 1: Window advanced, base=1, unacked=8
+[0;32mKTP: Socket 0: Data packet received with seq=193
+[0;32mKTP: Socket 0: Sending ACK, last_ack=193, window=5
+[0;32mKTP: Socket 1: ACK received, last_ack=191, window=7
+[0;32mKTP: Socket 1: Processing ACK for 1 packets up to seq 191
+[0;32mKTP: Socket 1: Window advanced, base=2, unacked=7
+[0;32mKTP: Socket 0: Data packet received with seq=194
+[0;32mKTP: Socket 0: Sending ACK, last_ack=194, window=4
+[0;32mKTP: Socket 1: ACK received, last_ack=192, window=6
+[0;32mKTP: Socket 1: Processing ACK for 1 packets up to seq 192
+[0;32mKTP: Socket 1: Window advanced, base=3, unacked=6
+[0;32mKTP: Socket 0: Data packet received with seq=195
+[0;32mKTP: Socket 0: Sending ACK, last_ack=195, window=3
+[0;32mKTP: Socket 1: ACK received, last_ack=193, window=5
+[0;32mKTP: Socket 1: Processing ACK for 1 packets up to seq 193
+[0;32mKTP: Socket 1: Window advanced, base=4, unacked=5
+[0;32mKTP: Socket 0: Data packet received with seq=196
+[0;32mKTP: Socket 0: Sending ACK, last_ack=196, window=2
+[0;32mKTP: Socket 1: ACK received, last_ack=194, window=4
+[0;32mKTP: Socket 1: Processing ACK for 1 packets up to seq 194
+[0;32mKTP: Socket 1: Window advanced, base=5, unacked=4
+[0;32mKTP: Socket 0: Data packet received with seq=197
+[0;32mKTP: Socket 0: Sending ACK, last_ack=197, window=1
+[0;32mKTP: Socket 1: ACK received, last_ack=195, window=3
+[0;32mKTP: Socket 1: Processing ACK for 1 packets up to seq 195
+[0;32mKTP: Socket 1: Window advanced, base=6, unacked=3
+[0;32mKTP: Socket 0: Data packet received with seq=198
+[0;32mKTP: Socket 0: Sending ACK, last_ack=198, window=0
+[0;32mKTP: Socket 0: Buffer now full after processing packet 198
+[0;32mKTP: Socket 1: ACK received, last_ack=196, window=2
+[0;32mKTP: Socket 1: Processing ACK for 1 packets up to seq 196
+[0;32mKTP: Socket 1: Window advanced, base=7, unacked=2
+[0;32mKTP: Socket 1: ACK received, last_ack=197, window=1
+[0;32mKTP: Socket 1: Processing ACK for 1 packets up to seq 197
+[0;32mKTP: Socket 1: Window advanced, base=8, unacked=1
+[0;32mKTP: Socket 1: ACK received, last_ack=198, window=0
+[0;32mKTP: Socket 1: Processing ACK for 1 packets up to seq 198
+[0;32mKTP: Socket 1: Window advanced, base=9, unacked=0
+[0;32mKTP: Socket 0: Buffer space available, scheduling update ACKs
+[0;32mKTP: Socket 0: Sending capacity notification 1/10: ack=198, window=10
+[0;32mKTP: Socket 1: ACK received, last_ack=198, window=10
+[0;32mKTP: Socket 1: Duplicate ACK 198, updating window only
+[0;32mKTP: Socket 0: Sending capacity notification 2/10: ack=198, window=10
+[0;32mKTP: Socket 1: ACK received, last_ack=198, window=10
+[0;32mKTP: Socket 1: Duplicate ACK 198, updating window only
+[0;32mKTP: Socket 0: Sending capacity notification 3/10: ack=198, window=10
+[0;32mKTP: Socket 1: ACK received, last_ack=198, window=10
+[0;32mKTP: Socket 1: Duplicate ACK 198, updating window only
+[0;32mKTP: Socket 0: Sending capacity notification 4/10: ack=198, window=10
+[0;32mKTP: Socket 1: ACK received, last_ack=198, window=10
+[0;32mKTP: Socket 1: Duplicate ACK 198, updating window only
+[0;32mKTP: Socket 0: Sending capacity notification 5/10: ack=198, window=10
+[0;32mKTP: Socket 1: ACK received, last_ack=198, window=10
+[0;32mKTP: Socket 1: Duplicate ACK 198, updating window only
+[0;32mKTP: Socket 0: Sending capacity notification 6/10: ack=198, window=10
+[0;31mKTP: Socket 1: Incoming packet deliberately dropped (simulated loss)
+[0;32mKTP: Socket 0: Sending capacity notification 7/10: ack=198, window=10
+[0;32mKTP: Socket 1: ACK received, last_ack=198, window=10
+[0;32mKTP: Socket 1: Duplicate ACK 198, updating window only
+[0;32mKTP: Socket 0: Sending capacity notification 8/10: ack=198, window=10
+[0;32mKTP: Socket 1: ACK received, last_ack=198, window=10
+[0;32mKTP: Socket 1: Duplicate ACK 198, updating window only
+[0;32mKTP: Socket 0: Sending capacity notification 9/10: ack=198, window=10
+[0;32mKTP: Socket 1: ACK received, last_ack=198, window=10
+[0;32mKTP: Socket 1: Duplicate ACK 198, updating window only
+[0;32mKTP: Socket 0: Sending capacity notification 10/10: ack=198, window=10
+[0;32mKTP: Socket 1: ACK received, last_ack=198, window=10
+[0;32mKTP: Socket 1: Duplicate ACK 198, updating window only
+[0;36mKTP: Socket 1: New packet sent with sequence 199
+[0;36mKTP: Socket 1: New packet sent with sequence 200
+[0;36mKTP: Socket 1: New packet sent with sequence 201
+[0;36mKTP: Socket 1: New packet sent with sequence 202
+[0;36mKTP: Socket 1: New packet sent with sequence 203
+[0;36mKTP: Socket 1: New packet sent with sequence 204
+[0;36mKTP: Socket 1: New packet sent with sequence 205
+[0;36mKTP: Socket 1: New packet sent with sequence 206
+[0;32mKTP: Socket 0: Data packet received with seq=199
+[0;32mKTP: Socket 0: Sending ACK, last_ack=199, window=9
+[0;36mKTP: Socket 1: New packet sent with sequence 207
+[0;36mKTP: Socket 1: New packet sent with sequence 208
+[0;32mKTP: Socket 0: Data packet received with seq=200
+[0;32mKTP: Socket 0: Sending ACK, last_ack=200, window=8
+[0;32mKTP: Socket 1: ACK received, last_ack=199, window=9
+[0;32mKTP: Socket 1: Processing ACK for 1 packets up to seq 199
+[0;32mKTP: Socket 1: Window advanced, base=0, unacked=9
+[0;32mKTP: Socket 0: Data packet received with seq=201
+[0;32mKTP: Socket 0: Sending ACK, last_ack=201, window=7
+[0;32mKTP: Socket 0: Data packet received with seq=202
+[0;32mKTP: Socket 0: Sending ACK, last_ack=202, window=6
+[0;32mKTP: Socket 1: ACK received, last_ack=200, window=8
+[0;32mKTP: Socket 1: Processing ACK for 1 packets up to seq 200
+[0;32mKTP: Socket 1: Window advanced, base=1, unacked=8
+[0;32mKTP: Socket 0: Data packet received with seq=203
+[0;32mKTP: Socket 0: Sending ACK, last_ack=203, window=5
+[0;32mKTP: Socket 1: ACK received, last_ack=201, window=7
+[0;32mKTP: Socket 1: Processing ACK for 1 packets up to seq 201
+[0;32mKTP: Socket 1: Window advanced, base=2, unacked=7
+[0;32mKTP: Socket 0: Data packet received with seq=204
+[0;32mKTP: Socket 0: Sending ACK, last_ack=204, window=4
+[0;31mKTP: Socket 1: Incoming packet deliberately dropped (simulated loss)
+[0;32mKTP: Socket 0: Data packet received with seq=205
+[0;32mKTP: Socket 0: Sending ACK, last_ack=205, window=3
+[0;32mKTP: Socket 1: ACK received, last_ack=203, window=5
+[0;32mKTP: Socket 1: Processing ACK for 2 packets up to seq 203
+[0;32mKTP: Socket 1: Window advanced, base=4, unacked=5
+[0;32mKTP: Socket 0: Data packet received with seq=206
+[0;32mKTP: Socket 0: Sending ACK, last_ack=206, window=2
+[0;32mKTP: Socket 1: ACK received, last_ack=204, window=4
+[0;32mKTP: Socket 1: Processing ACK for 1 packets up to seq 204
+[0;32mKTP: Socket 1: Window advanced, base=5, unacked=4
+[0;32mKTP: Socket 0: Data packet received with seq=207
+[0;32mKTP: Socket 0: Sending ACK, last_ack=207, window=1
+[0;32mKTP: Socket 1: ACK received, last_ack=205, window=3
+[0;32mKTP: Socket 1: Processing ACK for 1 packets up to seq 205
+[0;32mKTP: Socket 1: Window advanced, base=6, unacked=3
+[0;31mKTP: Socket 0: Incoming packet deliberately dropped (simulated loss)
+[0;32mKTP: Socket 1: ACK received, last_ack=206, window=2
+[0;32mKTP: Socket 1: Processing ACK for 1 packets up to seq 206
+[0;32mKTP: Socket 1: Window advanced, base=7, unacked=2
+[0;32mKTP: Socket 1: ACK received, last_ack=207, window=1
+[0;32mKTP: Socket 1: Processing ACK for 1 packets up to seq 207
+[0;32mKTP: Socket 1: Window advanced, base=8, unacked=1
+[0;36mKTP: Socket 1: Timeout detected, retransmitting 1 pending packets
+[0;32mKTP: Socket 0: Data packet received with seq=208
+[0;32mKTP: Socket 0: Sending ACK, last_ack=208, window=9
+[0;32mKTP: Socket 1: ACK received, last_ack=208, window=9
+[0;32mKTP: Socket 1: Processing ACK for 1 packets up to seq 208
+[0;32mKTP: Socket 1: Window advanced, base=9, unacked=0
+[0;35mKTP Manager: Signal 2 received, initiating shutdown sequence...
+[0;35mKTP Manager: Waiting for thread termination...
+[0;33mKTP: Network statistics: 608 total packets, 57 dropped (9.38%)
+[0mKTP Receiver thread terminated
+[0mKTP: Socket 1: Total 292 packets transmitted
+[0mKTP Sender thread terminated
+[0;35mKTP Manager: Signal 2 received, initiating shutdown sequence...
+[0;35mKTP Manager: Signal 2 received, initiating shutdown sequence...
+[0mKTP Garbage collector thread terminated
+[0;35mKTP Manager: System resources released successfully
+[0;35mKTP Manager: Service terminated successfully
