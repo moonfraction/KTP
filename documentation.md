@@ -1,4 +1,4 @@
-## Chandransh Singh <div style="text-align: right">22CS30017</div>
+# Chandransh Singh <div style="text-align: right">22CS30017</div>
 
 # KTP PROTOCOL IMPLEMENTATION DOCUMENTATION
 

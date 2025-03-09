@@ -1,6 +1,6 @@
 /**
  * KTP Protocol Management Daemon
- * 
+ *
  * Central controller process for KTP networking protocol
  */
 
@@ -13,862 +13,1317 @@
 #include <sys/types.h>
 #include <sys/ipc.h>
 #include <sys/shm.h>
+#include <sys/socket.h>
+#include <errno.h>
 #include "ksocket.h"
 
 /* Terminal color codes for log output */
-#define BOLD_CYAN    "\033[1;36m"
-#define COLOR_BLUE    "\033[0;36m"
-#define COLOR_RESET   "\033[0m"
-#define COLOR_MAGENTA "\033[0;35m"  
-#define BOLD_RED      "\033[1;31m" 
-#define COLOR_RED      "\033[0;31m"  
-#define COLOR_GREEN    "\033[0;32m" 
-#define COLOR_YELLOW   "\033[0;33m"
-
+#define BOLD_CYAN "\033[1;36m"
+#define COLOR_BLUE "\033[0;36m"
+#define COLOR_RESET "\033[0m"
+#define COLOR_MAGENTA "\033[0;35m"
+#define BOLD_RED "\033[1;31m"
+#define COLOR_RED "\033[0;31m"
+#define COLOR_GREEN "\033[0;32m"
+#define COLOR_YELLOW "\033[0;33m"
 
 /* Global state variables */
-static int isRunning            = 1;  /* Flag controlling thread execution */
-static int shmHandle            = -1; /* Shared memory ID */
-static ktp_socket_t* ktpSockets = NULL; /* Socket array in shared memory */
-
-/* Thread function prototypes */
-void* receiver_thread(void* arg);
-void* sender_thread(void* arg);
-void* garbage_collector_thread(void* arg);
+static int isRunning = 1;               /* Flag controlling thread execution */
+static int shmHandle = -1;              /* Shared memory ID */
+static ktp_socket_t *ktpSockets = NULL; /* Socket array in shared memory */
 
 /**
  * Signal handler for graceful shutdown
- * 
+ *
  * @param sig Signal number received
  */
-void handle_signal(int sig) 
+void handle_signal(int sig)
 {
     printf(COLOR_MAGENTA "KTP Manager: Signal %d received, initiating shutdown sequence...\n", sig);
     isRunning = 0;
 }
 
 /**
- * Initialize shared memory segment for KTP sockets
- * 
- * @return 0 on success, -1 on failure
+ * Establish shared memory region for KTP protocol communication
+ *
+ * @return Status code: 0=success, -1=failure
  */
-int init_shared_memory() 
+int init_shared_memory(void)
 {
-    /* Generate key for shared memory segment */
-    key_t shmKey = ftok("/tmp", 'K');
-    if (shmKey == -1) 
+    int status = 0;
+    const char *KEY_PATH = "/";
+    const int KEY_ID = 'A';
+
+    // Generate unique system key for memory segment
+    key_t memoryKey = ftok(KEY_PATH, KEY_ID);
+    if (memoryKey == -1)
     {
-        perror(COLOR_MAGENTA "KTP Manager: Key generation failed");
+        fprintf(stderr, COLOR_MAGENTA "KTP Manager: Unable to generate memory key\n");
         return -1;
     }
-    
-    /* Create shared memory segment */
-    shmHandle = shmget(shmKey, sizeof(ktp_socket_t) * KTP_MAX_SOCKETS, IPC_CREAT | 0666);
-    if (shmHandle == -1) 
+
+    // Allocate shared memory block
+    const size_t requiredBytes = sizeof(ktp_socket_t) * KTP_MAX_SOCKETS;
+    int memoryId = shmget(memoryKey, requiredBytes, 0666 | IPC_CREAT);
+    if (memoryId < 0)
     {
-        perror(COLOR_MAGENTA "KTP Manager: Shared memory allocation failed");
+        fprintf(stderr, COLOR_MAGENTA "KTP Manager: Memory segment creation failed\n");
         return -1;
     }
-    
-    /* Attach to the shared memory segment */
-    ktpSockets = (ktp_socket_t*)shmat(shmHandle, NULL, 0);
-    if (ktpSockets == (void*)-1) 
+    shmHandle = memoryId;
+
+    // Connect to allocated memory
+    void *memoryRegion = shmat(memoryId, NULL, 0);
+    if (memoryRegion == (void *)-1)
     {
-        perror(COLOR_MAGENTA "KTP Manager: Memory attachment failed");
+        fprintf(stderr, COLOR_MAGENTA "KTP Manager: Cannot attach to memory segment\n");
         return -1;
     }
-    
-    /* Initialize the shared memory */
-    for (int i = 0; i < KTP_MAX_SOCKETS; i++) 
+    ktpSockets = (ktp_socket_t *)memoryRegion;
+
+    // Configure individual socket slots
+    for (int socketIndex = 0; socketIndex < KTP_MAX_SOCKETS; socketIndex++)
     {
-        /* Zero out the socket structure */
-        memset(&ktpSockets[i], 0, sizeof(ktp_socket_t));
-        
-        /* Create a UDP socket for this slot */
-        int udpHandle = socket(AF_INET, SOCK_DGRAM, 0);
-        if (udpHandle < 0) 
+        // Clear memory slot
+        ktp_socket_t *currentSocket = &ktpSockets[socketIndex];
+        memset(currentSocket, 0, sizeof(ktp_socket_t));
+
+        // Set up underlying transport socket
+        int transportDescriptor = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+        if (transportDescriptor < 0)
         {
-            perror(COLOR_MAGENTA "KTP Manager: UDP socket creation failed");
-            continue;  /* Skip this slot if socket creation fails */
+            printf(COLOR_MAGENTA "KTP Manager: Warning - Socket %d initialization failed\n", socketIndex);
+            status = -1;
+            continue;
         }
-        
-        /* Store socket descriptor and mark as available */
-        ktpSockets[i].udp_sockfd = udpHandle;
-        ktpSockets[i].is_allocated = 0;
-        
-        /* Initialize mutex with process-shared attribute */
-        pthread_mutexattr_t mutexAttrs;
-        pthread_mutexattr_init(&mutexAttrs);
-        pthread_mutexattr_setpshared(&mutexAttrs, PTHREAD_PROCESS_SHARED);
-        pthread_mutex_init(&ktpSockets[i].socket_mutex, &mutexAttrs);
-        pthread_mutexattr_destroy(&mutexAttrs);
-        
-        printf(COLOR_MAGENTA "KTP Manager: Created UDP socket %d with descriptor %d\n", i, udpHandle);
+
+        // Configure slot properties
+        currentSocket->udp_sockfd = transportDescriptor;
+        currentSocket->is_allocated = 0;
+
+        // Initialize synchronization primitives
+        pthread_mutexattr_t mutexConfig;
+        pthread_mutexattr_init(&mutexConfig);
+        pthread_mutexattr_setpshared(&mutexConfig, PTHREAD_PROCESS_SHARED);
+
+        if (pthread_mutex_init(&currentSocket->socket_mutex, &mutexConfig) != 0)
+        {
+            printf(COLOR_MAGENTA "KTP Manager: Warning - Mutex initialization failed for socket %d\n", socketIndex);
+            close(transportDescriptor);
+            status = -1;
+        }
+
+        pthread_mutexattr_destroy(&mutexConfig);
+
+        printf(COLOR_MAGENTA "KTP Manager: Initialized socket %d (fd=%d)\n",
+               socketIndex, transportDescriptor);
     }
-    
-    printf(COLOR_MAGENTA "KTP Manager: Memory segment initialized for %d network sockets\n", KTP_MAX_SOCKETS);
+
+    if (status == 0)
+    {
+        printf(COLOR_MAGENTA "KTP Manager: Socket memory region ready with %d slots\n", KTP_MAX_SOCKETS);
+    }
+
+    return status;
+}
+
+/**
+ * Performs resource deallocation
+ *
+ * This function ensures all allocated system resources are properly
+ * released, avoiding memory leaks and abandoned IPC segments.
+ */
+void cleanup(void)
+{
+    int cleanup_status = 0;
+
+    // Log beginning of cleanup process
+    fprintf(stdout, COLOR_BLUE "KTP Service: Beginning resource cleanup\n");
+
+    // Handle socket memory region
+    if (ktpSockets)
+    {
+        // Only attempt detachment if pointer is valid
+        if (ktpSockets != (void *)-1)
+        {
+            // Release connection to shared memory
+            int result = shmdt(ktpSockets);
+            if (result != 0)
+            {
+                fprintf(stderr, COLOR_RED "KTP Service: Error %d detaching from memory segment\n", errno);
+                cleanup_status = -1;
+            }
+            else
+            {
+                fprintf(stdout, COLOR_BLUE "KTP Service: Memory segment detached\n");
+            }
+        }
+        else
+        {
+            fprintf(stderr, COLOR_RED "KTP Service: Invalid memory segment pointer detected\n");
+            cleanup_status = -1;
+        }
+
+        // Reset pointer to avoid double-free
+        ktpSockets = NULL;
+    }
+
+    // Remove shared memory segment
+    if (shmHandle >= 0)
+    {
+        // Request removal of shared memory from system
+        int result = shmctl(shmHandle, IPC_RMID, NULL);
+        if (result != 0)
+        {
+            fprintf(stderr, COLOR_RED "KTP Service: Error %d removing shared memory segment\n", errno);
+            cleanup_status = -1;
+        }
+        else
+        {
+            fprintf(stdout, COLOR_BLUE "KTP Service: Shared memory segment released\n");
+        }
+
+        // Mark handle as invalid
+        shmHandle = -1;
+    }
+
+    // Report final cleanup status
+    if (cleanup_status == 0)
+    {
+        fprintf(stdout, COLOR_GREEN "KTP Service: Resource cleanup completed successfully\n");
+    }
+    else
+    {
+        fprintf(stderr, COLOR_YELLOW "KTP Service: Resource cleanup completed with warnings\n");
+    }
+}
+
+// funtion defintions
+static void process_pending_bindings(void);
+static int prepare_descriptor_set(fd_set *descriptorSet);
+static int try_lock_active_socket(int socketId);
+static int handle_incoming_packet(int socketId, unsigned int *packetCounter,
+                                  unsigned int *lossCounter, int *notificationArray);
+static void process_data_packet(int socketId, ktp_message_t *message, struct sockaddr_in *sender);
+static void process_ack_packet(int socketId, ktp_message_t *message);
+static void process_acknowledged_packets(int socketId, int ackCount);
+static void store_data_packet(int socketId, ktp_message_t *message);
+static void update_receive_window_state(int socketId);
+static void send_acknowledgment(int socketId);
+static void send_buffer_state_updates(int *notificationArray);
+
+/**
+ * Receiver thread *
+ * Network packet reception and processing thread
+ *
+ * Handles incoming network traffic and maintains protocol state
+ *
+ * @param threadArgs Thread parameters (unused)
+ * @return Always returns NULL
+ */
+void *R_thread(void *threadArgs)
+{
+    // Initialize statistics counters
+    unsigned int totalPackets = 0;
+    unsigned int lostPackets = 0;
+
+    // Prepare socket monitoring structures
+    fd_set activeDescriptors;
+    struct timeval pollTimeout;
+
+    // Setup buffer notification tracking array
+    int pendingBufferNotifications[KTP_MAX_SOCKETS];
+    memset(pendingBufferNotifications, 0, sizeof(pendingBufferNotifications));
+
+    fprintf(stdout, BOLD_CYAN "KTP: R_thread initialized and running\n" COLOR_RESET);
+
+    // Main processing loop
+    while (isRunning)
+    {
+        // Handle socket binding operations
+        process_pending_bindings();
+
+        // Prepare monitoring set for active sockets
+        int highestDescriptor = prepare_descriptor_set(&activeDescriptors);
+
+        // Skip polling if no active sockets exist
+        if (highestDescriptor < 0)
+        {
+            usleep(150000); // 150ms pause before retry
+            continue;
+        }
+
+        // Configure polling timeout
+        pollTimeout.tv_sec = 0;
+        pollTimeout.tv_usec = 750000; // 750ms timeout
+
+        // Monitor sockets for activity
+        int readyCount = select(highestDescriptor + 1, &activeDescriptors, NULL, NULL, &pollTimeout);
+
+        // Handle select errors
+        if (readyCount < 0)
+        {
+            if (isRunning)
+            {
+                fprintf(stderr, COLOR_RED "KTP: Socket monitoring failed: %s\n" COLOR_RESET, strerror(errno));
+            }
+            continue;
+        }
+
+        // Process sockets with pending data
+        for (int socketIndex = 0; socketIndex < KTP_MAX_SOCKETS; socketIndex++)
+        {
+            // Skip locked or inactive sockets
+            if (!try_lock_active_socket(socketIndex))
+                continue;
+
+            int descriptor = ktpSockets[socketIndex].udp_sockfd;
+
+            // Check if this socket has data available
+            if (FD_ISSET(descriptor, &activeDescriptors))
+            {
+                // Process incoming packet
+                if (handle_incoming_packet(socketIndex, &totalPackets, &lostPackets,
+                                           pendingBufferNotifications) != 0)
+                {
+                    // Error handling if needed
+                }
+            }
+
+            pthread_mutex_unlock(&ktpSockets[socketIndex].socket_mutex);
+        }
+
+        // Handle buffer state notifications
+        send_buffer_state_updates(pendingBufferNotifications);
+    }
+
+    // Output final statistics before termination
+    if (totalPackets > 0)
+    {
+        fprintf(stdout, COLOR_YELLOW "KTP: Traffic summary - %u packets received, "
+                                     "%u lost (%.1f%% loss rate)\n" COLOR_RESET,
+                totalPackets, lostPackets, (lostPackets * 100.0) / totalPackets);
+    }
+
+    fprintf(stdout, BOLD_CYAN "KTP: R_thread terminated\n" COLOR_RESET);
+    return NULL;
+}
+
+/**
+ * Process all pending socket binding requests
+ */
+static void process_pending_bindings(void)
+{
+    for (int socketId = 0; socketId < KTP_MAX_SOCKETS; socketId++)
+    {
+        if (pthread_mutex_trylock(&ktpSockets[socketId].socket_mutex) != 0)
+            continue;
+
+        // Check if this socket needs binding
+        int bindingNeeded = ktpSockets[socketId].is_allocated &&
+                            ktpSockets[socketId].bind_requested &&
+                            !ktpSockets[socketId].is_bound;
+
+        if (bindingNeeded)
+        {
+            fprintf(stdout, COLOR_GREEN "KTP: Processing bind request for socket %d\n" COLOR_RESET, socketId);
+
+            // Create fresh UDP socket
+            close(ktpSockets[socketId].udp_sockfd);
+            int newSocket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+            ktpSockets[socketId].udp_sockfd = newSocket;
+
+            // Attempt binding operation
+            if (bind(newSocket, (struct sockaddr *)&ktpSockets[socketId].src_addr,
+                     sizeof(struct sockaddr_in)) == 0)
+            {
+                // Binding succeeded
+                ktpSockets[socketId].is_bound = 1;
+                ktpSockets[socketId].bind_requested = 0;
+                fprintf(stdout, COLOR_GREEN "KTP: Socket %d successfully bound\n" COLOR_RESET, socketId);
+            }
+            else
+            {
+                fprintf(stderr, COLOR_RED "KTP: Failed to bind socket %d: %s\n" COLOR_RESET,
+                        socketId, strerror(errno));
+            }
+        }
+
+        pthread_mutex_unlock(&ktpSockets[socketId].socket_mutex);
+    }
+}
+
+/**
+ * Prepare the file descriptor set for select()
+ *
+ * @param descriptorSet Pointer to fd_set to populate
+ * @return Highest file descriptor value, or -1 if no active sockets
+ */
+static int prepare_descriptor_set(fd_set *descriptorSet)
+{
+    int maxDescriptor = -1;
+    FD_ZERO(descriptorSet);
+
+    for (int socketId = 0; socketId < KTP_MAX_SOCKETS; socketId++)
+    {
+        if (pthread_mutex_trylock(&ktpSockets[socketId].socket_mutex) != 0)
+            continue;
+
+        int socketActive = ktpSockets[socketId].is_allocated &&
+                           ktpSockets[socketId].is_bound &&
+                           ktpSockets[socketId].udp_sockfd >= 0;
+
+        if (socketActive)
+        {
+            int descriptor = ktpSockets[socketId].udp_sockfd;
+
+            // Validate socket before using
+            int errorState = 0;
+            socklen_t errorLen = sizeof(errorState);
+            if (getsockopt(descriptor, SOL_SOCKET, SO_ERROR, &errorState, &errorLen) == 0 &&
+                errorState == 0)
+            {
+                // Socket is valid
+                FD_SET(descriptor, descriptorSet);
+                maxDescriptor = (descriptor > maxDescriptor) ? descriptor : maxDescriptor;
+            }
+            else
+            {
+                // Invalid socket - mark for cleanup
+                fprintf(stdout, COLOR_YELLOW "KTP: Invalid socket %d detected, marking for cleanup\n" COLOR_RESET,
+                        socketId);
+                ktpSockets[socketId].is_allocated = 0;
+                ktpSockets[socketId].udp_sockfd = -1;
+            }
+        }
+
+        pthread_mutex_unlock(&ktpSockets[socketId].socket_mutex);
+    }
+
+    return maxDescriptor;
+}
+
+/**
+ * Attempt to lock a socket if it's active
+ *
+ * @param socketId Socket index to check
+ * @return 1 if socket was locked and is active, 0 otherwise
+ */
+static int try_lock_active_socket(int socketId)
+{
+    if (pthread_mutex_trylock(&ktpSockets[socketId].socket_mutex) != 0)
+        return 0;
+
+    if (!ktpSockets[socketId].is_allocated || !ktpSockets[socketId].is_bound)
+    {
+        pthread_mutex_unlock(&ktpSockets[socketId].socket_mutex);
+        return 0;
+    }
+
+    return 1;
+}
+
+/**
+ * Process an incoming network packet
+ *
+ * @param socketId Socket index
+ * @param packetCounter Pointer to packet counter
+ * @param lossCounter Pointer to loss counter
+ * @param notificationArray Buffer notification array
+ * @return 0 on success, non-zero on error
+ */
+static int handle_incoming_packet(int socketId, unsigned int *packetCounter,
+                                  unsigned int *lossCounter, int *notificationArray)
+{
+    ktp_message_t incomingMsg;
+    struct sockaddr_in senderAddr;
+    socklen_t addrLen = sizeof(senderAddr);
+
+    // Receive the data
+    ssize_t bytesRead = recvfrom(ktpSockets[socketId].udp_sockfd, &incomingMsg,
+                                 sizeof(incomingMsg), 0,
+                                 (struct sockaddr *)&senderAddr, &addrLen);
+
+    // Update statistics
+    (*packetCounter)++;
+
+    // Check for simulated packet loss
+    if (dropMessage(KTP_PACKET_LOSS_PROB))
+    {
+        fprintf(stdout, COLOR_RED "KTP: Simulated packet loss on socket %d\n" COLOR_RESET, socketId);
+        (*lossCounter)++;
+        return 0;
+    }
+
+    // Handle receive errors
+    if (bytesRead <= 0)
+        return -1;
+
+    // Process by message type
+    switch (incomingMsg.header.type)
+    {
+    case KTP_TYPE_DATA:
+        process_data_packet(socketId, &incomingMsg, &senderAddr);
+        // Reset buffer notification counter
+        notificationArray[socketId] = 0;
+        break;
+
+    case KTP_TYPE_ACK:
+        process_ack_packet(socketId, &incomingMsg);
+        break;
+
+    default:
+        fprintf(stderr, COLOR_RED "KTP: Unknown packet type %d received\n" COLOR_RESET,
+                incomingMsg.header.type);
+        break;
+    }
+
     return 0;
 }
 
 /**
- * Release allocated resources
+ * Process DATA type packet
  */
-void cleanup() 
+static void process_data_packet(int socketId, ktp_message_t *message, struct sockaddr_in *sender)
 {
-    if (ktpSockets != NULL && ktpSockets != (void*)-1) 
+    uint8_t sequenceNum = message->header.seq_num;
+    uint8_t expectedSeq = ktpSockets[socketId].rwnd.expected_seq_num;
+
+    fprintf(stdout, COLOR_GREEN "KTP: Socket %d received DATA packet sequence=%d\n" COLOR_RESET,
+            socketId, sequenceNum);
+
+    // Check for duplicate packet
+    int isDuplicate = 0;
+    for (int i = 0; i < KTP_RECV_BUFFER_SIZE; i++)
     {
-        /* Detach from shared memory */
-        shmdt(ktpSockets);
+        if (ktpSockets[socketId].rwnd.received_msgs[i] == sequenceNum)
+        {
+            isDuplicate = 1;
+            break;
+        }
     }
-    
-    if (shmHandle != -1) 
+
+    // Calculate window boundaries
+    int inWindow = 0;
+    uint8_t windowEnd = (expectedSeq + ktpSockets[socketId].rwnd.size - 1) % 256;
+
+    // Handle window wrap-around
+    if (expectedSeq <= windowEnd)
     {
-        /* Remove shared memory segment */
-        shmctl(shmHandle, IPC_RMID, NULL);
+        inWindow = (sequenceNum >= expectedSeq && sequenceNum <= windowEnd);
     }
-    
-    printf(COLOR_MAGENTA "KTP Manager: System resources released successfully\n");
+    else
+    {
+        inWindow = (sequenceNum >= expectedSeq || sequenceNum <= windowEnd);
+    }
+
+    // Handle packet based on duplicate status and window position
+    if (isDuplicate)
+    {
+        // Send duplicate ACK
+        send_acknowledgment(socketId);
+    }
+    else if (inWindow)
+    {
+        // New in-window packet
+        store_data_packet(socketId, message);
+    }
+    else
+    {
+        fprintf(stdout, COLOR_RED "KTP: Socket %d discarded out-of-window packet seq=%d\n" COLOR_RESET,
+                socketId, sequenceNum);
+    }
 }
 
 /**
- * Main entry point for the KTP daemon
+ * Process ACK type packet
  */
-int main() 
+static void process_ack_packet(int socketId, ktp_message_t *message)
 {
-    /* Set up signal handlers for graceful termination */
-    signal(SIGINT, handle_signal);
-    signal(SIGTERM, handle_signal);
-    
-    /* Initialize random number generator for packet loss simulation */
-    srand(time(NULL));
-    
-    /* Initialize shared memory */
-    if (init_shared_memory() != 0) 
+    uint8_t lastAcknowledged = message->header.last_ack;
+    uint8_t advertisedWindow = message->header.rwnd;
+
+    fprintf(stdout, COLOR_GREEN "KTP: Socket %d received ACK for seq=%d window=%d\n" COLOR_RESET,
+            socketId, lastAcknowledged, advertisedWindow);
+
+    // Update send window size based on receiver's advertised window
+    ktpSockets[socketId].swnd.size = advertisedWindow;
+
+    // Count acknowledged packets
+    int acknowledgedCount = 0;
+    int foundAck = 0;
+
+    for (int i = 0; i < ktpSockets[socketId].swnd.num_unacked; i++)
     {
-        fprintf(stderr, COLOR_MAGENTA "KTP Manager: Memory initialization failed\n");
-        return 1;
+        int windowPos = (ktpSockets[socketId].swnd.base + i) % KTP_MAX_WINDOW_SIZE;
+        uint8_t seqNum = ktpSockets[socketId].swnd.seq_nums[windowPos];
+
+        acknowledgedCount++;
+
+        if (seqNum == lastAcknowledged)
+        {
+            foundAck = 1;
+            break;
+        }
     }
-    
-    /* Thread handles */
-    pthread_t rxThread, txThread, gcThread;
-    
-    /* Start the receiver thread (R) */
-    if (pthread_create(&rxThread, NULL, receiver_thread, NULL) != 0) 
+
+    // Handle duplicate or spurious ACK
+    if (!foundAck)
     {
-        perror(COLOR_MAGENTA "KTP Manager: Receiver thread creation failed");
-        cleanup();
-        return 1;
+        fprintf(stdout, COLOR_YELLOW "KTP: Socket %d received duplicate ACK %d\n" COLOR_RESET,
+                socketId, lastAcknowledged);
+        return;
     }
-    
-    /* Start the sender thread (S) */
-    if (pthread_create(&txThread, NULL, sender_thread, NULL) != 0) 
+
+    // Process valid ACK
+    process_acknowledged_packets(socketId, acknowledgedCount);
+}
+
+/**
+ * Process acknowledged packets and update window
+ */
+static void process_acknowledged_packets(int socketId, int ackCount)
+{
+    fprintf(stdout, COLOR_GREEN "KTP: Socket %d processing %d acknowledged packets\n" COLOR_RESET,
+            socketId, ackCount);
+
+    // Clear acknowledged packets from buffer
+    for (int i = 0; i < ackCount; i++)
     {
-        perror(COLOR_MAGENTA "KTP Manager: Sender thread creation failed");
-        isRunning = 0;  /* Signal other threads to terminate */
-        pthread_join(rxThread, NULL);
-        cleanup();
-        return 1;
+        int bufferIndex = (ktpSockets[socketId].swnd.base + i) % KTP_SEND_BUFFER_SIZE;
+        memset(ktpSockets[socketId].send_buffer[bufferIndex], 0, KTP_MSG_SIZE);
+        ktpSockets[socketId].send_buffer_occ[bufferIndex] = 0;
     }
-    
-    /* Start the garbage collector thread (G) */
-    if (pthread_create(&gcThread, NULL, garbage_collector_thread, NULL) != 0) 
+
+    // Update window state
+    ktpSockets[socketId].swnd.base = (ktpSockets[socketId].swnd.base + ackCount) % KTP_MAX_WINDOW_SIZE;
+    ktpSockets[socketId].swnd.num_unacked -= ackCount;
+}
+
+/**
+ * Store data packet in receive buffer
+ */
+static void store_data_packet(int socketId, ktp_message_t *message)
+{
+    uint8_t sequenceNum = message->header.seq_num;
+    uint8_t expectedSeq = ktpSockets[socketId].rwnd.expected_seq_num;
+
+    // Check buffer capacity
+    if (ktpSockets[socketId].rwnd.buffer_occupied >= KTP_RECV_BUFFER_SIZE)
     {
-        perror(COLOR_MAGENTA "KTP Manager: Garbage collector thread creation failed");
-        isRunning = 0;  /* Signal other threads to terminate */
-        pthread_join(rxThread, NULL);
-        pthread_join(txThread, NULL);
-        cleanup();
-        return 1;
+        // Buffer is full
+        ktpSockets[socketId].rwnd.nospace_flag = 1;
+        ktpSockets[socketId].rwnd.size = 0;
+
+        fprintf(stdout, COLOR_YELLOW "KTP: Socket %d buffer full, packet %d dropped\n" COLOR_RESET,
+                socketId, sequenceNum);
+        return;
     }
-    
-    printf(COLOR_MAGENTA "KTP Manager: Protocol service initialized. All threads active.\n");
-    
-    /* Keep main thread running until signaled to stop */
-    while (isRunning) 
+
+    // Store packet in receive buffer
+    int writePos = ktpSockets[socketId].rwnd.buffer_write_pos;
+    int offset = ((sequenceNum - expectedSeq + 256) % 256) % KTP_RECV_BUFFER_SIZE;
+    int bufferPos = (writePos + offset) % KTP_RECV_BUFFER_SIZE;
+
+    // Copy data to buffer
+    memcpy(ktpSockets[socketId].recv_buffer[bufferPos], message->data, KTP_MSG_SIZE);
+    ktpSockets[socketId].rwnd.received_msgs[bufferPos] = sequenceNum;
+
+    // Process in-order packets
+    update_receive_window_state(socketId);
+
+    // Update acknowledgment information
+    ktpSockets[socketId].rwnd.last_ack_sent = (ktpSockets[socketId].rwnd.expected_seq_num - 1 + 256) % 256;
+
+    // Send acknowledgment
+    send_acknowledgment(socketId);
+
+    // Check if buffer is now full
+    if (ktpSockets[socketId].rwnd.buffer_occupied >= KTP_RECV_BUFFER_SIZE)
     {
-        sleep(1);
+        ktpSockets[socketId].rwnd.nospace_flag = 1;
+        ktpSockets[socketId].rwnd.size = 0;
     }
-    
-    /* Wait for all threads to terminate */
-    printf(COLOR_MAGENTA "KTP Manager: Waiting for thread termination...\n");
-    pthread_join(rxThread, NULL);
-    pthread_join(txThread, NULL);
-    pthread_join(gcThread, NULL);
-    
-    /* Perform final cleanup */
+}
+
+/**
+ * Update receive window state based on received packets
+ */
+static void update_receive_window_state(int socketId)
+{
+    // Process consecutive in-order packets
+    while (ktpSockets[socketId].rwnd.received_msgs[ktpSockets[socketId].rwnd.buffer_write_pos] ==
+           ktpSockets[socketId].rwnd.expected_seq_num)
+    {
+        // Update state for this in-order packet
+        ktpSockets[socketId].rwnd.expected_seq_num =
+            (ktpSockets[socketId].rwnd.expected_seq_num + 1) % 256;
+
+        ktpSockets[socketId].rwnd.buffer_write_pos =
+            (ktpSockets[socketId].rwnd.buffer_write_pos + 1) % KTP_RECV_BUFFER_SIZE;
+
+        ktpSockets[socketId].rwnd.buffer_occupied++;
+        ktpSockets[socketId].rwnd.size--;
+    }
+}
+
+/**
+ * Send acknowledgment packet
+ */
+static void send_acknowledgment(int socketId)
+{
+    ktp_message_t ackMsg;
+    memset(&ackMsg, 0, sizeof(ackMsg));
+
+    ackMsg.header.type = KTP_TYPE_ACK;
+    ackMsg.header.last_ack = ktpSockets[socketId].rwnd.last_ack_sent;
+    ackMsg.header.rwnd = ktpSockets[socketId].rwnd.size;
+
+    fprintf(stdout, COLOR_GREEN "KTP: Socket %d sending ACK seq=%d window=%d\n" COLOR_RESET,
+            socketId, ackMsg.header.last_ack, ackMsg.header.rwnd);
+
+    sendto(ktpSockets[socketId].udp_sockfd, &ackMsg, sizeof(ackMsg.header), 0,
+           (struct sockaddr *)&ktpSockets[socketId].dst_addr, sizeof(struct sockaddr_in));
+}
+
+/**
+ * Send buffer state updates for sockets that need them
+ */
+static void send_buffer_state_updates(int *notificationArray)
+{
+    for (int socketId = 0; socketId < KTP_MAX_SOCKETS; socketId++)
+    {
+        if (pthread_mutex_trylock(&ktpSockets[socketId].socket_mutex) != 0)
+            continue;
+
+        if (ktpSockets[socketId].is_allocated && ktpSockets[socketId].is_bound)
+        {
+            // Check if buffer was previously full but now has space
+            int bufferFreed = ktpSockets[socketId].rwnd.nospace_flag &&
+                              ktpSockets[socketId].rwnd.buffer_occupied < KTP_RECV_BUFFER_SIZE;
+
+            if (bufferFreed)
+            {
+                // Buffer now has space, send update notifications
+                ktpSockets[socketId].rwnd.nospace_flag = 0;
+                notificationArray[socketId] = 10; // Schedule 10 notification messages
+
+                fprintf(stdout, COLOR_GREEN "KTP: Socket %d buffer now available, scheduling updates\n" COLOR_RESET,
+                        socketId);
+            }
+
+            // Send any scheduled buffer notifications
+            if (notificationArray[socketId] > 0)
+            {
+                ktp_message_t ackMsg;
+                memset(&ackMsg, 0, sizeof(ackMsg));
+
+                ackMsg.header.type = KTP_TYPE_ACK;
+                ackMsg.header.last_ack = ktpSockets[socketId].rwnd.last_ack_sent;
+                ackMsg.header.rwnd = ktpSockets[socketId].rwnd.size;
+
+                fprintf(stdout, COLOR_GREEN "KTP: Socket %d buffer notification %d/10: ack=%d window=%d\n" COLOR_RESET, socketId, 11 - notificationArray[socketId],
+                        ackMsg.header.last_ack, ackMsg.header.rwnd);
+
+                sendto(ktpSockets[socketId].udp_sockfd, &ackMsg, sizeof(ackMsg.header), 0,
+                       (struct sockaddr *)&ktpSockets[socketId].dst_addr, sizeof(struct sockaddr_in));
+
+                notificationArray[socketId]--;
+            }
+        }
+
+        pthread_mutex_unlock(&ktpSockets[socketId].socket_mutex);
+    }
+}
+
+// functions in S_thread
+/**
+ * Process packet timeouts for Socket
+ * @returns Number of packets retransmitted
+ */
+static int handle_Socket_timeouts(int SocketId, struct timeval *now)
+{
+    int retransmittedCount = 0;
+    int hasTimedOutPackets = 0;
+    ktp_socket_t *Socket = &ktpSockets[SocketId];
+
+    // First detect if any packet has timed out
+    for (int packetIdx = 0; packetIdx < Socket->swnd.num_unacked; packetIdx++)
+    {
+        int windowPos = (Socket->swnd.base + packetIdx) % KTP_MAX_WINDOW_SIZE;
+
+        // Calculate elapsed time
+        double elapsedSecs = (now->tv_sec - Socket->swnd.send_times[windowPos].tv_sec) +
+                             (now->tv_usec - Socket->swnd.send_times[windowPos].tv_usec) / 1000000.0;
+
+        if (elapsedSecs >= KTP_TIMEOUT_SEC)
+        {
+            hasTimedOutPackets = 1;
+            break;
+        }
+    }
+
+    // If timeout detected, resend entire window
+    if (hasTimedOutPackets && Socket->swnd.num_unacked > 0)
+    {
+        fprintf(stdout, COLOR_RED "KTP: Socket %d timeout detected - "
+                                  "resending %d packets\n" COLOR_RESET,
+                SocketId, Socket->swnd.num_unacked);
+
+        // Go through all unacknowledged packets
+        for (int packetIdx = 0; packetIdx < Socket->swnd.num_unacked; packetIdx++)
+        {
+            // Calculate relevant buffer positions
+            int windowPos = (Socket->swnd.base + packetIdx) % KTP_MAX_WINDOW_SIZE;
+            int bufferPos = (Socket->swnd.base + packetIdx) % KTP_SEND_BUFFER_SIZE;
+            uint8_t seqNumber = Socket->swnd.seq_nums[windowPos];
+
+            // Prepare retransmission packet
+            ktp_message_t pkt;
+            memset(&pkt, 0, sizeof(pkt));
+
+            pkt.header.type = KTP_TYPE_DATA;
+            pkt.header.seq_num = seqNumber;
+            pkt.header.rwnd = Socket->rwnd.size;
+            pkt.header.last_ack = (Socket->rwnd.expected_seq_num - 1) % 256;
+
+            // Copy payload data
+            memcpy(pkt.data, Socket->send_buffer[bufferPos], KTP_MSG_SIZE);
+
+            // Transmit packet
+            if (sendto(Socket->udp_sockfd, &pkt, sizeof(pkt), 0,
+                       (struct sockaddr *)&Socket->dst_addr,
+                       sizeof(struct sockaddr_in)) > 0)
+            {
+                retransmittedCount++;
+
+                // Update timestamp to prevent immediate retransmission
+                gettimeofday(&Socket->swnd.send_times[windowPos], NULL);
+            }
+        }
+    }
+
+    return retransmittedCount;
+}
+
+/**
+ * Transmit new packets for Socket within window constraints
+ * @returns Number of packets sent
+ */
+static int transmit_new_packets(int SocketId, unsigned int *stats)
+{
+    int packetsSent = 0;
+    ktp_socket_t *Socket = &ktpSockets[SocketId];
+
+    // Try to send as many packets as window allows
+    while (Socket->swnd.num_unacked < Socket->swnd.size)
+    {
+        // Find next packet to send
+        int nextPacketPos = (Socket->swnd.base + Socket->swnd.num_unacked) % KTP_SEND_BUFFER_SIZE;
+
+        // Check if buffer slot contains data ready to send
+        if (Socket->send_buffer_occ[nextPacketPos] == 0)
+        {
+            break; // No more data waiting to be sent
+        }
+
+        // Prepare new data packet
+        ktp_message_t pkt;
+        memset(&pkt, 0, sizeof(pkt));
+
+        // Configure packet headers
+        pkt.header.type = KTP_TYPE_DATA;
+        pkt.header.seq_num = Socket->swnd.next_seq_num;
+        pkt.header.rwnd = Socket->rwnd.size;
+        pkt.header.last_ack = (Socket->rwnd.expected_seq_num - 1) % 256;
+
+        // Copy payload data
+        memcpy(pkt.data, Socket->send_buffer[nextPacketPos], KTP_MSG_SIZE);
+
+        // Update window tracking
+        int windowPos = (Socket->swnd.base + Socket->swnd.num_unacked) % KTP_MAX_WINDOW_SIZE;
+        Socket->swnd.seq_nums[windowPos] = pkt.header.seq_num;
+
+        // Record transmission time
+        gettimeofday(&Socket->swnd.send_times[windowPos], NULL);
+
+        // Transmit packet
+        if (sendto(Socket->udp_sockfd, &pkt, sizeof(pkt), 0,
+                   (struct sockaddr *)&Socket->dst_addr,
+                   sizeof(struct sockaddr_in)) > 0)
+        {
+            packetsSent++;
+
+            fprintf(stdout, COLOR_GREEN "KTP: Socket %d sent packet seq=%d\n" COLOR_RESET,
+                    SocketId, pkt.header.seq_num);
+
+            // Update window state
+            Socket->swnd.next_seq_num = (Socket->swnd.next_seq_num + 1) % 256;
+            Socket->swnd.num_unacked++;
+
+            // Update statistics
+            stats[SocketId]++;
+        }
+        else
+        {
+            fprintf(stderr, COLOR_RED "KTP: Socket %d send error: %s\n" COLOR_RESET,
+                    SocketId, strerror(errno));
+            break; // Stop on error
+        }
+    }
+
+    return packetsSent;
+}
+
+/**
+ * Check if flow control is limiting transmission on an Socket
+ * @return 1 if window is full, 0 otherwise
+ */
+static int is_flow_controlled(int SocketId)
+{
+    return ktpSockets[SocketId].swnd.num_unacked >= ktpSockets[SocketId].swnd.size;
+}
+
+/**
+ * Sender thread *
+ * Data transmission control thread - Handles reliable packet delivery
+ *
+ * @param threadContext Thread context (unused)
+ * @return Always NULL on thread exit
+ */
+void *S_thread(void *threadContext)
+{
+    fprintf(stdout, COLOR_YELLOW "KTP: S_thread activated\n" COLOR_RESET);
+
+    // Operational statistics tracking
+    unsigned int txPackets[KTP_MAX_SOCKETS] = {0};
+    unsigned int retransmissions[KTP_MAX_SOCKETS] = {0};
+    unsigned int flowControlHits[KTP_MAX_SOCKETS] = {0};
+
+    // Main controller loop
+    while (isRunning)
+    {
+        int activeSockets = 0;
+        int totalNewPacketsSent = 0;
+        int totalRetransmissions = 0;
+
+        // Process each transport Socket
+        for (int SocketId = 0; SocketId < KTP_MAX_SOCKETS; SocketId++)
+        {
+            // Try to acquire exclusive access
+            if (pthread_mutex_trylock(&ktpSockets[SocketId].socket_mutex) != 0)
+                continue; // Skip if in use by another thread
+
+            // Verify Socket state
+            if (!ktpSockets[SocketId].is_allocated || !ktpSockets[SocketId].is_bound)
+            {
+                pthread_mutex_unlock(&ktpSockets[SocketId].socket_mutex);
+                continue;
+            }
+
+            activeSockets++;
+
+            // Get current timestamp for timeout checks
+            struct timeval currentTimestamp;
+            gettimeofday(&currentTimestamp, NULL);
+
+            // RELIABILITY: Handle retransmissions for timed-out packets
+            int retransmitted = handle_Socket_timeouts(SocketId, &currentTimestamp);
+            totalRetransmissions += retransmitted;
+            retransmissions[SocketId] += retransmitted;
+
+            // Check if flow control is limiting transmission
+            if (is_flow_controlled(SocketId))
+            {
+                flowControlHits[SocketId]++;
+
+                if (flowControlHits[SocketId] % 10 == 0)
+                {
+                    fprintf(stdout, COLOR_BLUE "KTP: Socket %d: Window full (size=%d)\n" COLOR_RESET,
+                            SocketId, ktpSockets[SocketId].swnd.size);
+                }
+            }
+
+            // THROUGHPUT: Send new packets as window permits
+            int sentPackets = transmit_new_packets(SocketId, txPackets);
+            totalNewPacketsSent += sentPackets;
+
+            // Release Socket
+            pthread_mutex_unlock(&ktpSockets[SocketId].socket_mutex);
+        }
+
+        // Adapt sleep time based on activity
+        if (activeSockets > 0)
+        {
+            //  activity summary if anything happened
+            if (totalNewPacketsSent > 0 || totalRetransmissions > 0)
+            {
+                // Activity summary with performance metrics
+                // float retransmissionRate = totalNewPacketsSent > 0 ?
+                //     (100.0f * totalRetransmissions) / (totalNewPacketsSent + totalRetransmissions) : 0.0f;
+
+                fprintf(stdout, COLOR_BLUE "KTP: Activity summary - "
+                                           "sent: %d new, %d retx, %d active sockets\n" COLOR_RESET,
+                        totalNewPacketsSent, totalRetransmissions, activeSockets);
+            }
+            // More frequent checks when active
+            usleep(KTP_TIMEOUT_SEC * 300000); // 30% of timeout value
+        }
+        else
+        {
+            // Sleep longer when no active Sockets
+            usleep(KTP_TIMEOUT_SEC * 800000); // 80% of timeout value
+        }
+    }
+
+    // Generate final statistics report
+    fprintf(stdout, COLOR_YELLOW "KTP: S_thread shutting down\n" COLOR_RESET);
+
+    for (int SocketId = 0; SocketId < KTP_MAX_SOCKETS; SocketId++)
+    {
+        if (txPackets[SocketId] > 0)
+        {
+            float retransmissionRate = txPackets[SocketId] > 0 ? (100.0 * retransmissions[SocketId]) / txPackets[SocketId] : 0.0;
+
+            fprintf(stdout, COLOR_YELLOW "KTP: Socket %d statistics - "
+                                         "%u packets sent, %u retransmitted (%.1f%%), "
+                                         "%u flow control pauses\n" COLOR_RESET,
+                    SocketId,
+                    txPackets[SocketId],
+                    retransmissions[SocketId],
+                    retransmissionRate,
+                    flowControlHits[SocketId]);
+        }
+    }
+
+    fprintf(stdout, COLOR_YELLOW "KTP: S_thread terminated\n" COLOR_RESET);
+    return NULL;
+}
+
+/**
+ * Verifies if process still exists
+ *
+ * @param processId Process ID to check
+ * @return 1 if running, 0 if terminated
+ */
+static int is_process_running(pid_t processId)
+{
+    if (processId <= 0)
+    {
+        return 0; // Invalid PID
+    }
+
+    // Test if process exists by sending null signal
+    return (kill(processId, 0) == 0 || errno != ESRCH);
+}
+
+/**
+ * Purges network buffers for a specific Socket
+ *
+ * @param SocketIdx Socket index to reset
+ */
+static void purge_Socket_buffers(int SocketIdx)
+{
+    int i;
+
+    // Reset transmission buffer data
+    for (i = 0; i < KTP_SEND_BUFFER_SIZE; i++)
+    {
+        memset(ktpSockets[SocketIdx].send_buffer[i], 0, KTP_MSG_SIZE);
+        ktpSockets[SocketIdx].send_buffer_occ[i] = 0;
+    }
+
+    // Reset reception buffer data
+    for (i = 0; i < KTP_RECV_BUFFER_SIZE; i++)
+    {
+        memset(ktpSockets[SocketIdx].recv_buffer[i], 0, KTP_MSG_SIZE);
+    }
+
+    // Reset sequence tracking array
+    memset(ktpSockets[SocketIdx].rwnd.received_msgs, 0,
+           sizeof(ktpSockets[SocketIdx].rwnd.received_msgs));
+}
+
+/**
+ * Resets protocol state of an Socket
+ *
+ * @param SocketIdx Socket index to reset
+ */
+static void reset_Socket_state(int SocketIdx)
+{
+    // Reset transmit window state
+    ktpSockets[SocketIdx].swnd.base = 0;
+    ktpSockets[SocketIdx].swnd.next_seq_num = 0;
+    ktpSockets[SocketIdx].swnd.num_unacked = 0;
+
+    // Reset receive window state
+    ktpSockets[SocketIdx].rwnd.expected_seq_num = 0;
+    ktpSockets[SocketIdx].rwnd.buffer_write_pos = 0;
+    ktpSockets[SocketIdx].rwnd.buffer_read_pos = 0;
+    ktpSockets[SocketIdx].rwnd.buffer_occupied = 0;
+    ktpSockets[SocketIdx].rwnd.last_ack_sent = 255;
+    ktpSockets[SocketIdx].rwnd.nospace_flag = 0;
+}
+
+/**
+ * Reclaims a single abandoned Socket
+ *
+ * @param SocketIdx Socket index to reclaim
+ * @return 1 if Socket was reclaimed, 0 otherwise
+ */
+static int reclaim_orphaned_Socket(int SocketIdx)
+{
+    // Skip unallocated sockets
+    if (!ktpSockets[SocketIdx].is_allocated)
+    {
+        return 0;
+    }
+
+    pid_t owningProcess = ktpSockets[SocketIdx].pid;
+
+    // Check if process still exists
+    if (is_process_running(owningProcess))
+    {
+        return 0; // Process still active, nothing to do
+    }
+
+    // Log reclamation
+    fprintf(stdout, BOLD_RED "G_thread: Reclaiming Socket %d from terminated process %d\n" COLOR_RESET, SocketIdx, owningProcess);
+
+    // Reset socket allocation state
+    ktpSockets[SocketIdx].is_allocated = 0;
+    ktpSockets[SocketIdx].is_bound = 0;
+    ktpSockets[SocketIdx].bind_requested = 0;
+    ktpSockets[SocketIdx].pid = 0;
+
+    // Clean up network buffers
+    purge_Socket_buffers(SocketIdx);
+
+    // Reset protocol state
+    reset_Socket_state(SocketIdx);
+
+    return 1; // Successfully reclaimed
+}
+
+/**
+ * Resource monitoring thread - recovers abandoned network Sockets
+ *
+ * @param arg Thread parameter (unused)
+ * @return Always NULL
+ */
+void *G_thread(void *arg)
+{
+    fprintf(stdout, COLOR_BLUE "G_thread: Garbage collector thread initialized\n" COLOR_RESET);
+
+    // Scan configuration
+    const int SCAN_INTERVAL_BASE = 8;   // Base interval between scans in seconds
+    const int SCAN_INTERVAL_JITTER = 3; // Random jitter to add to scan interval
+    const int MAX_BATCH_SIZE = 4;       // Maximum sockets to reclaim in one cycle
+
+    // Runtime statistics
+    unsigned int scanCount = 0;
+    unsigned int totalReclaimed = 0;
+
+    // Main monitoring loop
+    while (isRunning)
+    {
+        scanCount++;
+        int batchCounter = 0;
+        int reclaimedInScan = 0;
+
+        fprintf(stdout, COLOR_BLUE "G_thread: Beginning scan cycle #%u\n" COLOR_RESET,
+                scanCount);
+
+        // Start with reverse order to optimize common allocation patterns
+        // (Higher indices are often allocated more recently)
+        for (int SocketIdx = KTP_MAX_SOCKETS - 1;
+             SocketIdx >= 0 && batchCounter < MAX_BATCH_SIZE;
+             SocketIdx--)
+        {
+            // Try to acquire mutex without blocking
+            if (pthread_mutex_trylock(&ktpSockets[SocketIdx].socket_mutex) != 0)
+            {
+                continue; // Skip if locked by another thread
+            }
+
+            // Process Socket and track results
+            if (reclaim_orphaned_Socket(SocketIdx))
+            {
+                reclaimedInScan++;
+                totalReclaimed++;
+                batchCounter++;
+            }
+
+            // Release mutex
+            pthread_mutex_unlock(&ktpSockets[SocketIdx].socket_mutex);
+        }
+
+        // Log results if Sockets were reclaimed
+        if (reclaimedInScan > 0)
+        {
+            fprintf(stdout, COLOR_GREEN "G_thread: Reclaimed %d Sockets in scan cycle #%u\n" COLOR_RESET, reclaimedInScan, scanCount);
+        }
+
+        // Calculate next scan interval with jitter to avoid synchronization issues
+        int sleepDuration = SCAN_INTERVAL_BASE + (rand() % SCAN_INTERVAL_JITTER);
+
+        // Adapt scan frequency based on activity
+        if (reclaimedInScan > 0)
+        {
+            // More frequent scans if we found orphaned resources
+            sleepDuration = sleepDuration / 2;
+
+            // Ensure minimum wait time
+            if (sleepDuration < 2)
+                sleepDuration = 2;
+        }
+
+        // Wait until next scan cycle
+        sleep(sleepDuration);
+    }
+
+    // Final report
+    fprintf(stdout, COLOR_BLUE "G_thread: Terminating after %u scans, reclaimed %u orphaned Sockets\n" COLOR_RESET, scanCount, totalReclaimed);
+
+    return NULL;
+}
+
+/**
+ * Protocol service entry point
+ *
+ * Initializes and manages the transport protocol service lifecycle
+ */
+int main(int argc, char **argv)
+{
+    int exitStatus = EXIT_SUCCESS;
+    time_t startTime;
+    char timeBuffer[64];
+    pthread_t threadHandles[3] = {0};
+    const char *threadNames[3] = {"Receiver", "Sender", "GarbageCollector"};
+    void *(*threadFunctions[3])(void *) = {
+        &R_thread,
+        &S_thread,
+        &G_thread};
+    int activeThreadCount = 0;
+
+    // Log startup information with timestamp
+    time(&startTime);
+    strftime(timeBuffer, sizeof(timeBuffer), "%Y-%m-%d %H:%M:%S", localtime(&startTime));
+    printf(COLOR_GREEN "KTP Manager: Starting at %s\n" COLOR_RESET, timeBuffer);
+
+    // Register termination handlers
+    struct sigaction terminationHandler;
+    memset(&terminationHandler, 0, sizeof(terminationHandler));
+    terminationHandler.sa_handler = handle_signal;
+    sigaction(SIGINT, &terminationHandler, NULL);
+    sigaction(SIGTERM, &terminationHandler, NULL);
+    sigaction(SIGHUP, &terminationHandler, NULL);
+
+    // Initialize entropy source with multiple seeds
+    unsigned int randomSeed = (unsigned int)time(NULL) ^ (getpid() << 16);
+    srand(randomSeed);
+    // printf(COLOR_BLUE "KTP Manager: Random generator initialized (seed=0x%08x)\n" COLOR_RESET, randomSeed);
+
+    // Initialize communications infrastructure
+    printf(COLOR_BLUE "KTP Manager: Initializing shmem resources...\n" COLOR_RESET);
+    if (init_shared_memory() != 0)
+    {
+        fprintf(stderr, COLOR_RED "KTP Manager: Failed to initialize shmem resources\n" COLOR_RESET);
+        return EXIT_FAILURE;
+    }
+
+    // Launch service threads with robust error handling
+    printf(COLOR_BLUE "KTP Manager: Launching protocol threads...\n" COLOR_RESET);
+
+    // Create all required threads
+    for (int i = 0; i < 3; i++)
+    {
+        if (pthread_create(&threadHandles[i], NULL, threadFunctions[i], NULL) != 0)
+        {
+            fprintf(stderr, COLOR_RED "KTP Manager: Failed to launch %s thread: %s\n" COLOR_RESET,
+                    threadNames[i], strerror(errno));
+
+            // Signal running threads to terminate
+            isRunning = 0;
+
+            // Wait for previously launched threads
+            for (int j = 0; j < i; j++)
+            {
+                printf(COLOR_YELLOW "KTP Manager: Waiting for %s thread to terminate...\n" COLOR_RESET, threadNames[j]);
+                pthread_join(threadHandles[j], NULL);
+            }
+
+            // Clean up and exit
+            cleanup();
+            return EXIT_FAILURE;
+        }
+
+        activeThreadCount++;
+        printf(COLOR_GREEN "KTP Manager: %s thread started (tid=%lu)\n" COLOR_RESET,
+               threadNames[i], (unsigned long)threadHandles[i]);
+    }
+
+    // Service monitoring loop
+    printf(COLOR_GREEN "KTP Manager: All subsystems operational\n" COLOR_RESET);
+
+    // Periodic status reporting during operation
+    int monitorCycle = 0;
+    while (isRunning)
+    {
+        sleep(5);
+        monitorCycle++;
+
+        if (monitorCycle % 60 == 0)
+        { // Report every 5 minutes
+            time_t currentTime;
+            time(&currentTime);
+            double uptime = difftime(currentTime, startTime);
+
+            // Format uptime as days:hours:minutes
+            int days = (int)(uptime / 86400);
+            int hours = (int)((uptime - days * 86400) / 3600);
+            int minutes = (int)((uptime - days * 86400 - hours * 3600) / 60);
+
+            printf(COLOR_BLUE "KTP Manager: Status - operational for %d days, %d hours, %d minutes\n" COLOR_RESET, days, hours, minutes);
+        }
+    }
+
+    // Coordinated shutdown sequence
+    printf(COLOR_YELLOW "KTP Manager: Initiating shutdown sequence\n" COLOR_RESET);
+
+    // Join threads in reverse order (resource monitor first, packet delivery second, ingress last)
+    for (int i = activeThreadCount - 1; i >= 0; i--)
+    {
+        printf(COLOR_YELLOW "KTP Manager: Waiting for %s thread to complete...\n" COLOR_RESET, threadNames[i]);
+
+        // Set timeout for thread termination
+        struct timespec timeout;
+        clock_gettime(CLOCK_REALTIME, &timeout);
+        timeout.tv_sec += 5; // 5-second timeout
+
+        // Wait for thread with timeout
+        int joinResult = pthread_join(threadHandles[i], NULL);
+        if (joinResult != 0)
+        {
+            fprintf(stderr, COLOR_RED "KTP Manager: %s thread did not terminate gracefully: %s\n" COLOR_RESET, threadNames[i], strerror(joinResult));
+            exitStatus = EXIT_FAILURE;
+        }
+        else
+        {
+            printf(COLOR_GREEN "KTP Manager: %s thread terminated successfully\n" COLOR_RESET, threadNames[i]);
+        }
+    }
+
+    // Final resource cleanup
     cleanup();
-    
-    printf(COLOR_MAGENTA "KTP Manager: Service terminated successfully\n");
-    return 0;
-}
 
-/**
- * Receiver thread (R) - Processes incoming packets and sends acknowledgments
- * 
- * @param arg Thread argument (unused)
- * @return Always NULL
- */
-void* receiver_thread(void* arg) 
-{
-    printf(COLOR_RESET "KTP Receiver thread started\n");
+    // Service termination
+    time_t endTime;
+    time(&endTime);
+    strftime(timeBuffer, sizeof(timeBuffer), "%Y-%m-%d %H:%M:%S", localtime(&endTime));
 
-    int packetCount = 0;
-    int droppedCount = 0;
-    
-    fd_set readFds;
-    struct timeval timeVal;
-    
-    /* Track buffer-free notifications needed per socket */
-    int bufferFreeAcksNeeded[KTP_MAX_SOCKETS];
-    for (int i = 0; i < KTP_MAX_SOCKETS; i++) 
-    {
-        bufferFreeAcksNeeded[i] = 0;
-    }
+    double runTime = difftime(endTime, startTime);
+    printf(COLOR_GREEN "KTP Manager: Successfully terminated at %s (runtime: %.1f seconds)\n" COLOR_RESET, timeBuffer, runTime);
 
-    /* Main thread loop */
-    while (isRunning) 
-    {
-        /* Process binding requests from client applications */
-        for (int i = 0; i < KTP_MAX_SOCKETS; i++) 
-        {
-            if (pthread_mutex_trylock(&ktpSockets[i].socket_mutex) == 0) 
-            {
-                const int isBindPending = 
-                    ktpSockets[i].is_allocated && 
-                    ktpSockets[i].bind_requested && 
-                    !ktpSockets[i].is_bound;
-                    
-                if (isBindPending) 
-                {
-                    printf(COLOR_GREEN "KTP: Processing binding request for socket %d\n", i);
-                    
-                    /* Close and recreate UDP socket to ensure clean state */
-                    close(ktpSockets[i].udp_sockfd);
-                    ktpSockets[i].udp_sockfd = socket(AF_INET, SOCK_DGRAM, 0);
-                    
-                    /* Bind the socket to the requested address */
-                    if (bind(ktpSockets[i].udp_sockfd, 
-                            (struct sockaddr*)&ktpSockets[i].src_addr, 
-                            sizeof(struct sockaddr_in)) < 0) 
-                    {
-                        perror("KTP: Socket binding operation failed");
-                        /* Don't set is_bound - client will time out */
-                    } 
-                    else 
-                    {
-                        /* Binding successful */
-                        ktpSockets[i].is_bound = 1;
-                        ktpSockets[i].bind_requested = 0;
-                        printf(COLOR_GREEN "KTP: Socket %d bound successfully to network endpoint\n", i);
-                    }
-                }
-                pthread_mutex_unlock(&ktpSockets[i].socket_mutex);
-            }
-        }
-        
-        /* Set up file descriptor set for select() */
-        FD_ZERO(&readFds);
-        int maxFd = -1;
-        
-        /* Add all active UDP sockets to the set */
-        for (int i = 0; i < KTP_MAX_SOCKETS; i++) 
-        {
-            if (pthread_mutex_trylock(&ktpSockets[i].socket_mutex) == 0) 
-            {
-                const int isSocketActive = 
-                    ktpSockets[i].is_allocated && 
-                    ktpSockets[i].is_bound && 
-                    ktpSockets[i].udp_sockfd >= 0;
-                    
-                if (isSocketActive) 
-                {
-                    int fd = ktpSockets[i].udp_sockfd;
-                    
-                    /* Validate socket descriptor */
-                    int sockError = 0;
-                    socklen_t errLen = sizeof(sockError);
-                    int checkResult = getsockopt(fd, SOL_SOCKET, SO_ERROR, &sockError, &errLen);
-                    
-                    if (checkResult == 0 && sockError == 0) 
-                    {
-                        /* Socket is valid, add to select set */
-                        FD_SET(fd, &readFds);
-                        if (fd > maxFd) 
-                        {
-                            maxFd = fd;
-                        }
-                    } 
-                    else 
-                    {
-                        printf(COLOR_GREEN "KTP: Socket %d: Invalid descriptor %d (result=%d, error=%d)\n", 
-                            i, fd, checkResult, sockError);
-                        /* Socket appears invalid but marked as allocated - fix this */
-                        ktpSockets[i].is_allocated = 0;
-                        ktpSockets[i].udp_sockfd = -1;
-                    }
-                }
-                pthread_mutex_unlock(&ktpSockets[i].socket_mutex);
-            }
-        }
-        
-        /* If no active sockets, just wait a bit and try again */
-        if (maxFd < 0) 
-        {
-            usleep(100000); /* 100ms */
-            continue;
-        }
-        
-        /* Set timeout for select */
-        timeVal.tv_sec = 1;  /* 1 second */
-        timeVal.tv_usec = 0;
-        
-        /* Wait for incoming data on any socket */
-        int selectResult = select(maxFd + 1, &readFds, NULL, NULL, &timeVal);
-        
-        if (selectResult < 0) 
-        {
-            /* Handle select error */
-            if (isRunning) { /* Only log if we're not shutting down */
-                perror("KTP: Network polling error");
-            }
-            continue;
-        }
-        
-        /* Process each socket that has data available */
-        for (int i = 0; i < KTP_MAX_SOCKETS; i++) 
-        {
-            if (pthread_mutex_trylock(&ktpSockets[i].socket_mutex) == 0) 
-            {
-                if (ktpSockets[i].is_allocated && ktpSockets[i].is_bound) 
-                {
-                    int fd = ktpSockets[i].udp_sockfd;
-                    
-                    if (FD_ISSET(fd, &readFds)) 
-                    {
-                        /* Receive incoming message */
-                        ktp_message_t message;
-                        struct sockaddr_in srcAddr;
-                        socklen_t addrLen = sizeof(srcAddr);
-                        
-                        ssize_t bytesReceived = recvfrom(fd, &message, sizeof(message), 0,
-                                                        (struct sockaddr *)&srcAddr, &addrLen);
-
-                        packetCount++;
-                        
-                        /* Check for simulated packet loss */
-                        if (dropMessage(KTP_PACKET_LOSS_PROB)) 
-                        {
-                            printf(COLOR_RED "KTP: Socket %d: Incoming packet deliberately dropped (simulated loss)\n", i);
-                            droppedCount++;
-                            pthread_mutex_unlock(&ktpSockets[i].socket_mutex);
-                            continue;
-                        }
-                        
-                        /* Handle receive errors */
-                        if (bytesReceived <= 0) 
-                        {
-                            pthread_mutex_unlock(&ktpSockets[i].socket_mutex);
-                            continue;
-                        }
-                        
-                        /* Process message based on type */
-                        if (message.header.type == KTP_TYPE_DATA) 
-                        {
-                            /* Reset buffer free notification counter */
-                            bufferFreeAcksNeeded[i] = 0;
-                            
-                            /* Log received data message */
-                            printf(COLOR_GREEN "KTP: Socket %d: Data packet received with seq=%d\n", 
-                                i, message.header.seq_num);
-                            
-                            const uint8_t seqNum = message.header.seq_num;
-                            const uint8_t expectedSeqNum = ktpSockets[i].rwnd.expected_seq_num;
-                            
-                            /* Check for duplicate message */
-                            int isDuplicate = 0;
-                            for (int j = 0; j < KTP_RECV_BUFFER_SIZE; j++) 
-                            {
-                                if (ktpSockets[i].rwnd.received_msgs[j] == seqNum) 
-                                {
-                                    isDuplicate = 1;
-                                    break;
-                                }
-                            }
-                            
-                            /* Calculate acceptable sequence number range (window) */
-                            int inWindow = 0;
-                            const int windowEnd = (expectedSeqNum + ktpSockets[i].rwnd.size - 1) % 256;
-                            
-                            /* Check if sequence number is within window */
-                            if (expectedSeqNum <= windowEnd) 
-                            {
-                                /* Normal case (window doesn't wrap) */
-                                inWindow = (seqNum >= expectedSeqNum && seqNum <= windowEnd);
-                            } 
-                            else 
-                            {
-                                /* Window wraps around (crosses 255->0) */
-                                inWindow = (seqNum >= expectedSeqNum || seqNum <= windowEnd);
-                            }
-                            
-                            if (isDuplicate) 
-                            {
-                                /* For duplicate packets, just send ACK with current state */
-                                ktp_message_t ackMsg;
-                                memset(&ackMsg, 0, sizeof(ackMsg));
-                                ackMsg.header.type = KTP_TYPE_ACK;
-                                ackMsg.header.last_ack = ktpSockets[i].rwnd.last_ack_sent;
-                                ackMsg.header.rwnd = ktpSockets[i].rwnd.size;
-                                
-                                printf(COLOR_GREEN "KTP: Socket %d: Sending ACK for duplicate packet, last_ack=%d\n", 
-                                    i, ackMsg.header.last_ack);
-                                
-                                sendto(ktpSockets[i].udp_sockfd, &ackMsg, sizeof(ackMsg.header), 0,
-                                        (struct sockaddr *)&ktpSockets[i].dst_addr, 
-                                        sizeof(struct sockaddr_in));
-                            }
-                            else if (inWindow) 
-                            {
-                                /* Packet is within receive window - process it */
-                                
-                                /* Check if buffer has space */
-                                if (ktpSockets[i].rwnd.buffer_occupied >= KTP_RECV_BUFFER_SIZE) 
-                                {
-                                    /* Buffer full - set flag and drop packet */
-                                    ktpSockets[i].rwnd.nospace_flag = 1;
-                                    ktpSockets[i].rwnd.size = 0;
-                                    
-                                    printf(COLOR_YELLOW "KTP: Socket %d: Receive buffer full, packet %d discarded\n", 
-                                        i, seqNum);
-                                    pthread_mutex_unlock(&ktpSockets[i].socket_mutex);
-                                    continue;
-                                }
-                                
-                                /* Store packet in receive buffer at calculated position */
-                                const int writePos = ktpSockets[i].rwnd.buffer_write_pos;
-                                const int offset = ((seqNum - expectedSeqNum + 256) % 256) % KTP_RECV_BUFFER_SIZE;
-                                const int targetPos = (writePos + offset) % KTP_RECV_BUFFER_SIZE;
-
-                                /* Copy message data to buffer */
-                                memcpy(ktpSockets[i].recv_buffer[targetPos], message.data, KTP_MSG_SIZE);
-                                
-                                /* Mark sequence number as received */
-                                ktpSockets[i].rwnd.received_msgs[targetPos] = seqNum;
-                                
-                                /* Advance expected sequence number for in-order packets */
-                                while (ktpSockets[i].rwnd.received_msgs[ktpSockets[i].rwnd.buffer_write_pos] == 
-                                    ktpSockets[i].rwnd.expected_seq_num) 
-                                {
-                                    /* Update state for each in-order packet */
-                                    ktpSockets[i].rwnd.expected_seq_num = 
-                                        (ktpSockets[i].rwnd.expected_seq_num + 1) % 256;
-                                    ktpSockets[i].rwnd.buffer_write_pos = 
-                                        (ktpSockets[i].rwnd.buffer_write_pos + 1) % KTP_RECV_BUFFER_SIZE;
-                                    ktpSockets[i].rwnd.buffer_occupied++;
-                                    ktpSockets[i].rwnd.size--;
-                                }
-                                
-                                /* Update last_ack_sent */
-                                ktpSockets[i].rwnd.last_ack_sent = (ktpSockets[i].rwnd.expected_seq_num - 1 + 256) % 256;
-                                
-                                /* Send ACK with updated state */
-                                ktp_message_t ackMsg;
-                                memset(&ackMsg, 0, sizeof(ackMsg));
-                                ackMsg.header.type = KTP_TYPE_ACK;
-                                ackMsg.header.last_ack = ktpSockets[i].rwnd.last_ack_sent;
-                                ackMsg.header.rwnd = ktpSockets[i].rwnd.size;
-                                
-                                printf(COLOR_GREEN "KTP: Socket %d: Sending ACK, last_ack=%d, window=%d\n", 
-                                    i, ackMsg.header.last_ack, ackMsg.header.rwnd);
-                                
-                                sendto(ktpSockets[i].udp_sockfd, &ackMsg, sizeof(ackMsg.header), 0,
-                                    (struct sockaddr *)&ktpSockets[i].dst_addr, 
-                                    sizeof(struct sockaddr_in));
-
-                                /* Check if buffer is now full */
-                                if (ktpSockets[i].rwnd.buffer_occupied >= KTP_RECV_BUFFER_SIZE) 
-                                {
-                                    ktpSockets[i].rwnd.nospace_flag = 1;
-                                    ktpSockets[i].rwnd.size = 0;
-                                    
-                                    printf(COLOR_GREEN "KTP: Socket %d: Buffer now full after processing packet %d\n", 
-                                        i, seqNum);
-                                }
-                            } 
-                            else 
-                            {
-                                /* Sequence number outside window - discard */
-                                printf(COLOR_RED "KTP: Socket %d: Packet outside window, seq=%d discarded\n", 
-                                    i, seqNum);
-                            }
-                        }
-                        else if (message.header.type == KTP_TYPE_ACK) 
-                        {
-                            /* Handle ACK message */
-                            printf(COLOR_GREEN "KTP: Socket %d: ACK received, last_ack=%d, window=%d\n", 
-                                i, message.header.last_ack, message.header.rwnd);
-                            
-                            const uint8_t lastAck = message.header.last_ack;
-                            
-                            /* Update send window size based on advertised receive window */
-                            ktpSockets[i].swnd.size = message.header.rwnd;
-                            
-                            /* Process acknowledged packets */
-                            int ackedCount = 0;
-                            int foundAck = 0;
-                            
-                            /* Count acknowledged packets up to last_ack */
-                            for (int j = 0; j < ktpSockets[i].swnd.num_unacked; j++) 
-                            {
-                                int windowIdx = (ktpSockets[i].swnd.base + j) % KTP_MAX_WINDOW_SIZE;
-                                uint8_t seqNum = ktpSockets[i].swnd.seq_nums[windowIdx];
-                                
-                                ackedCount++;
-                                
-                                /* Check if we found the ack boundary */
-                                if (seqNum == lastAck) 
-                                {
-                                    foundAck = 1;
-                                    break;
-                                }
-                            }
-                            
-                            /* If we didn't find the ack in our window, it's a duplicate */
-                            if (!foundAck) 
-                            {
-                                printf(COLOR_GREEN "KTP: Socket %d: Duplicate ACK %d, updating window only\n", 
-                                    i, lastAck);
-                                pthread_mutex_unlock(&ktpSockets[i].socket_mutex);
-                                continue;
-                            }
-                            
-                            /* Found valid ACK, process acknowledged packets */
-                            printf(COLOR_GREEN "KTP: Socket %d: Processing ACK for %d packets up to seq %d\n", 
-                                i, ackedCount, lastAck);
-                            
-                            /* Clear the acknowledged messages from buffer */
-                            for (int j = 0; j < ackedCount; j++) 
-                            {
-                                int seqIdx = (ktpSockets[i].swnd.base + j) % KTP_SEND_BUFFER_SIZE;
-                                
-                                /* Clear buffer and mark as unoccupied */
-                                memset(ktpSockets[i].send_buffer[seqIdx], 0, KTP_MSG_SIZE);
-                                ktpSockets[i].send_buffer_occ[seqIdx] = 0;
-                            }
-                            
-                            /* Slide window forward */
-                            ktpSockets[i].swnd.base = (ktpSockets[i].swnd.base + ackedCount) % KTP_MAX_WINDOW_SIZE;
-                            ktpSockets[i].swnd.num_unacked -= ackedCount;
-                            
-                            printf(COLOR_GREEN "KTP: Socket %d: Window advanced, base=%d, unacked=%d\n", 
-                                i, ktpSockets[i].swnd.base, ktpSockets[i].swnd.num_unacked);
-                        }
-                    }
-                }
-                pthread_mutex_unlock(&ktpSockets[i].socket_mutex);
-            }
-        }
-        
-        /* Handle buffer space availability notifications */
-        for (int i = 0; i < KTP_MAX_SOCKETS; i++) 
-        {
-            if (pthread_mutex_trylock(&ktpSockets[i].socket_mutex) == 0) 
-            {
-                if (ktpSockets[i].is_allocated && ktpSockets[i].is_bound) 
-                {
-                    /* Check if buffer was previously full but now has space */
-                    const int bufferFreed = 
-                        ktpSockets[i].rwnd.nospace_flag && 
-                        ktpSockets[i].rwnd.buffer_occupied < KTP_RECV_BUFFER_SIZE;
-                        
-                    if (bufferFreed) 
-                    {
-                        /* Buffer has transitioned from full to having space */
-                        ktpSockets[i].rwnd.nospace_flag = 0;
-                        
-                        /* Schedule multiple window update ACKs to ensure delivery */
-                        bufferFreeAcksNeeded[i] = 10;
-                        
-                        printf(COLOR_GREEN "KTP: Socket %d: Buffer space available, scheduling update ACKs\n", i);
-                    }
-                    
-                    /* Send any scheduled buffer-free notification ACKs */
-                    if (bufferFreeAcksNeeded[i] > 0) 
-                    {
-                        ktp_message_t ackMsg;
-                        memset(&ackMsg, 0, sizeof(ackMsg));
-                        ackMsg.header.type = KTP_TYPE_ACK;
-                        ackMsg.header.last_ack = ktpSockets[i].rwnd.last_ack_sent;
-                        ackMsg.header.rwnd = ktpSockets[i].rwnd.size;
-                        
-                        printf(COLOR_GREEN "KTP: Socket %d: Sending capacity notification %d/10: ack=%d, window=%d\n", 
-                            i, 11 - bufferFreeAcksNeeded[i], 
-                            ackMsg.header.last_ack, ackMsg.header.rwnd);
-                        
-                        sendto(ktpSockets[i].udp_sockfd, &ackMsg, sizeof(ackMsg.header), 0,
-                            (struct sockaddr *)&ktpSockets[i].dst_addr, 
-                            sizeof(struct sockaddr_in));
-                        
-                        bufferFreeAcksNeeded[i]--;
-                    }
-                }
-                pthread_mutex_unlock(&ktpSockets[i].socket_mutex);
-            }
-        }
-    }
-    
-    /* Print packet loss statistics before exiting */
-    if (packetCount > 0) 
-    {
-        printf(COLOR_YELLOW "KTP: Network statistics: %d total packets, %d dropped (%.2f%%)\n", 
-            packetCount, droppedCount, (droppedCount * 100.0) / packetCount);
-    }
-    printf(COLOR_RESET "KTP Receiver thread terminated\n");
-    return NULL;
-}
-
-/**
- * Sender thread (S) - Transmits new packets and handles retransmissions
- * 
- * @param arg Thread argument (unused)
- * @return Always NULL
- */
-void* sender_thread(void* arg) 
-{
-    printf(COLOR_RESET "KTP Sender thread started\n");
-    struct timeval currentTime;
-
-    /* Track transmission statistics per socket */
-    int txPacketsPerSocket[KTP_MAX_SOCKETS];
-    for (int i = 0; i < KTP_MAX_SOCKETS; i++) 
-    {
-        txPacketsPerSocket[i] = 0;
-    }
-    
-    /* Main thread loop */
-    while (isRunning) 
-    {
-        /* Process each socket */
-        for (int i = 0; i < KTP_MAX_SOCKETS; i++) 
-        {
-            /* Skip if we can't lock the mutex (socket in use by another thread) */
-            if (pthread_mutex_trylock(&ktpSockets[i].socket_mutex) != 0) 
-            {
-                continue;
-            }
-            
-            /* Process only allocated and bound sockets */
-            const int isActive = ktpSockets[i].is_allocated && ktpSockets[i].is_bound;
-            if (!isActive) 
-            {
-                pthread_mutex_unlock(&ktpSockets[i].socket_mutex);
-                continue;
-            }
-            
-            /* Get current time for timeout calculations */
-            gettimeofday(&currentTime, NULL);
-            
-            /* Check for timeouts and retransmit if needed */
-            int windowTimeout = 0;
-
-            /* First pass: check if any message has timed out */
-            for (int j = 0; j < ktpSockets[i].swnd.num_unacked; j++) 
-            {
-                /* Calculate index in circular buffer */
-                int windowIdx = (ktpSockets[i].swnd.base + j) % KTP_MAX_WINDOW_SIZE;
-                
-                /* Calculate elapsed time since last transmission */
-                long timeDiffSec = currentTime.tv_sec - ktpSockets[i].swnd.send_times[windowIdx].tv_sec;
-                long timeDiffUsec = currentTime.tv_usec - ktpSockets[i].swnd.send_times[windowIdx].tv_usec;
-                double timeDiff = timeDiffSec + (timeDiffUsec / 1000000.0);
-                
-                /* Check against timeout threshold */
-                if (timeDiff >= KTP_TIMEOUT_SEC) 
-                {
-                    windowTimeout = 1;
-                    break;  /* One timeout is enough to trigger retransmission */
-                }
-            }
-
-            /* If any message timed out, retransmit the entire window */
-            if (windowTimeout) 
-            {
-                printf(COLOR_BLUE "KTP: Socket %d: Timeout detected, retransmitting %d pending packets\n", 
-                    i, ktpSockets[i].swnd.num_unacked);
-                
-                /* Retransmit all messages in the current window */
-                for (int j = 0; j < ktpSockets[i].swnd.num_unacked; j++) 
-                {
-                /* Calculate index in circular buffer */
-                int windowIdx = (ktpSockets[i].swnd.base + j) % KTP_MAX_WINDOW_SIZE;
-                /* Get sequence number for this packet */
-                uint8_t seqNum = ktpSockets[i].swnd.seq_nums[windowIdx];
-                /* Calculate buffer index */
-                int seqIdx = (ktpSockets[i].swnd.base + j) % KTP_SEND_BUFFER_SIZE;
-                
-                /* Create KTP message for retransmission */
-                ktp_message_t message;
-                message.header.type = KTP_TYPE_DATA;
-                message.header.seq_num = seqNum;
-                message.header.rwnd = ktpSockets[i].rwnd.size;
-                message.header.last_ack = ktpSockets[i].rwnd.expected_seq_num - 1;
-                
-                /* Copy data from send buffer */
-                memcpy(message.data, ktpSockets[i].send_buffer[seqIdx], 
-                        KTP_MSG_SIZE);
-                
-                /* Send the message */
-                sendto(ktpSockets[i].udp_sockfd, &message, sizeof(message), 0,
-                        (struct sockaddr *)&ktpSockets[i].dst_addr, 
-                        sizeof(struct sockaddr_in));
-                    
-                /* Update statistics */
-                txPacketsPerSocket[i]++;
-                
-                /* Update send timestamp for timeout calculation */
-                gettimeofday(&ktpSockets[i].swnd.send_times[windowIdx], NULL);
-            }
-        }
-        
-        /* Process new messages to send if window not full */
-        while (ktpSockets[i].swnd.num_unacked < ktpSockets[i].swnd.size) 
-        {
-            /* Calculate next sequence index in buffer */
-            int nextSeqIdx = (ktpSockets[i].swnd.base + ktpSockets[i].swnd.num_unacked) % KTP_SEND_BUFFER_SIZE;
-            
-            /* Check if there's a message ready to send */
-            if (ktpSockets[i].send_buffer_occ[nextSeqIdx] == 0) 
-            {
-                /* No more messages queued for sending */
-                break;
-            }
-            
-            /* Create KTP message */
-            ktp_message_t message;
-            message.header.type = KTP_TYPE_DATA;
-            message.header.seq_num = ktpSockets[i].swnd.next_seq_num;
-            message.header.rwnd = ktpSockets[i].rwnd.size;
-            message.header.last_ack = ktpSockets[i].rwnd.expected_seq_num - 1;
-            
-            /* Copy data from send buffer */
-            memcpy(message.data, ktpSockets[i].send_buffer[nextSeqIdx], 
-                    KTP_MSG_SIZE);
-            
-            /* Store sequence number in window tracking */
-            int windowIdx = (ktpSockets[i].swnd.base + ktpSockets[i].swnd.num_unacked) % KTP_MAX_WINDOW_SIZE;
-            ktpSockets[i].swnd.seq_nums[windowIdx] = message.header.seq_num;
-            
-            /* Record send time for timeout calculation */
-            gettimeofday(&ktpSockets[i].swnd.send_times[windowIdx], NULL);
-            
-            /* Send the message */
-            sendto(ktpSockets[i].udp_sockfd, &message, sizeof(message), 0,
-                    (struct sockaddr *)&ktpSockets[i].dst_addr, 
-                    sizeof(struct sockaddr_in));
-            
-            /* Update statistics */
-            txPacketsPerSocket[i]++;
-            
-            printf(COLOR_BLUE "KTP: Socket %d: New packet sent with sequence %d\n", 
-                    i, message.header.seq_num);
-            
-            /* Update window state */
-            ktpSockets[i].swnd.next_seq_num = (ktpSockets[i].swnd.next_seq_num + 1) % 256;
-            ktpSockets[i].swnd.num_unacked++;
-        }
-        
-        pthread_mutex_unlock(&ktpSockets[i].socket_mutex);
-    }
-    
-    /* Sleep for half the timeout period before next iteration */
-    usleep(KTP_TIMEOUT_SEC * 1000000 / 2);
-}
-
-/* Print transmission statistics before exiting */
-for (int i = 0; i < KTP_MAX_SOCKETS; i++) 
-{
-    if (txPacketsPerSocket[i] > 0) 
-    {
-        printf(COLOR_RESET "KTP: Socket %d: Total %d packets transmitted\n", 
-                i, txPacketsPerSocket[i]);
-    }
-}
-
-printf(COLOR_RESET "KTP Sender thread terminated\n");
-return NULL;
-}
-
-/**
- * Garbage collector thread (G) - Cleans up resources for terminated processes
- * 
- * @param arg Thread argument (unused)
- * @return Always NULL
- */
-void* garbage_collector_thread(void* arg) 
-{
-    printf(COLOR_RESET "KTP Garbage collector thread started\n");
-    
-    /* Constants */
-    const int CLEANUP_INTERVAL = 5; /* Seconds between cleanup cycles */
-    
-    /* Main thread loop */
-    while (isRunning) 
-    {
-        /* Check each socket */
-        for (int i = 0; i < KTP_MAX_SOCKETS; i++) 
-        {
-            /* Try to lock the socket mutex */
-            if (pthread_mutex_trylock(&ktpSockets[i].socket_mutex) == 0) 
-            {
-                /* Check only allocated sockets */
-                if (ktpSockets[i].is_allocated) 
-                {
-                    pid_t procId = ktpSockets[i].pid;
-                    
-                    /* Check if the process is still running */
-                    if (kill(procId, 0) == -1) 
-                    {
-                        /* Process is no longer running - clean up the socket */
-                        printf(BOLD_RED "KTP: Cleanup: Process %d terminated, recovering socket %d\n", 
-                               procId, i);
-                        
-                        /* Release the socket */
-                        ktpSockets[i].is_allocated = 0;
-                        ktpSockets[i].pid = 0;
-                        ktpSockets[i].is_bound = 0;
-                        
-                        /* Clear send buffer */
-                        for (int j = 0; j < KTP_SEND_BUFFER_SIZE; j++) 
-                        {
-                            memset(ktpSockets[i].send_buffer[j], 0, KTP_MSG_SIZE);
-                            ktpSockets[i].send_buffer_occ[j] = 0;
-                        }
-                        
-                        /* Clear receive buffer */
-                        for (int j = 0; j < KTP_RECV_BUFFER_SIZE; j++) 
-                        {
-                            memset(ktpSockets[i].recv_buffer[j], 0, KTP_MSG_SIZE);
-                        }
-                        
-                        /* Reset tracking arrays */
-                        memset(ktpSockets[i].rwnd.received_msgs, 0, 
-                              sizeof(ktpSockets[i].rwnd.received_msgs));
-                        
-                        /* Clear window structures */
-                        memset(&ktpSockets[i].swnd, 0, sizeof(ktpSockets[i].swnd));
-                        memset(&ktpSockets[i].rwnd, 0, sizeof(ktpSockets[i].rwnd));
-                    }
-                }
-                /* Unlock the mutex */
-                pthread_mutex_unlock(&ktpSockets[i].socket_mutex);
-            }
-            /* If mutex is locked, skip this socket for now */
-        }
-        
-        /* Sleep before next cleanup cycle */
-        sleep(CLEANUP_INTERVAL);
-    }
-    
-    printf(COLOR_RESET "KTP Garbage collector thread terminated\n");
-    return NULL;
+    return exitStatus;
 }

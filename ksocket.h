@@ -187,6 +187,6 @@ int dropMessage(float p);
  * 
  * @return          Pointer to socket array in shared memory
  */
-ktp_socket_t* get_ktp_sockets(void);
+ktp_socket_t* get_KTPsock_arr(void);
 
 #endif /* __KTP_SOCKET_H__ */
