@@ -20,7 +20,7 @@
 
 /* Protocol parameters */
 #define KTP_TIMEOUT_SEC       5     /* Retransmission timeout in seconds */
-#define KTP_PACKET_LOSS_PROB  0.15  /* Simulated packet loss probability */
+#define KTP_PACKET_LOSS_PROB  0.10  /* Simulated packet loss probability */
 
 /* Socket type identifier */
 #define SOCK_KTP              1000  /* KTP socket type */
