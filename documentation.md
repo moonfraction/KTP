@@ -2,8 +2,6 @@
 
 # KTP PROTOCOL IMPLEMENTATION DOCUMENTATION
 
-**Date:** 2025-03-09
-
 ## TABLE OF CONTENTS
 - [1. PROTOCOL OVERVIEW](#1-protocol-overview)
 - [2. DATA STRUCTURES](#2-data-structures)
@@ -357,8 +355,7 @@ This protocol provides reliable, in-order message delivery despite network unrel
 | 0.45           | 207            | 700                | 3.38                         | 1139         | 509            | 44.69%         |
 | 0.50           | 207            | 821                | 3.97                         | 1288         | 650            | 50.47%         |
 
-> File size: 105334B = 102KB
-> 
+> File size: 105334B ≃ 102KB
 > Note: One additional packet was send for metadata
 
 ## 10. KTP PROTOCOL ARCHITECTURE OVERVIEW
@@ -404,11 +401,13 @@ Follow these steps to run the KTP protocol for reliable file transfer:
    ```bash
    ./user2 <src_ip> <src_port> <dst_ip> <dst_port> <output_filename>
    ```  
+   eg: `./user2 127.0.0.1 5055 127.0.0.1 5056 out.txt`
 
 4. **Start the sender (`user1`)** in another terminal:  
    ```bash
    ./user1 <src_ip> <src_port> <dst_ip> <dst_port> <input_filename>
    ```  
+   eg: `./user1 127.0.0.1 5056 127.0.0.1 5055 input.txt`
 
 5. **Wait for the file transfer to complete**  
    - Monitor the `user2` terminal until the transfer finishes.  
