@@ -250,6 +250,8 @@ EINVAL, EBADF, ETIMEDOUT
   - Generates random number for comparison
   - Used for testing reliability mechanisms
 
+---
+
 ## 7. DAEMON IMPLEMENTATION
 
 ### 7.1 CORE FUNCTIONS
@@ -288,6 +290,100 @@ EINVAL, EBADF, ETIMEDOUT
   - Launches three protocol threads
   - Waits for termination signal
   - Ensures clean shutdown of all resources
+
+### 7.2 THREADs FUNCTIONS
+#### R_thread (Receiver Thread)
+
+##### Initialization
+- Sets up file descriptor sets and statistics counters.
+- Initializes a notification array per socket.
+
+##### Main Loop
+- Calls a helper to process any pending bind requests.
+- Prepares a descriptor set by checking for active, bound sockets.
+- Uses `select()` with a timeout to wait for incoming data on any socket.
+
+##### Processing Received Packets
+- For each socket with data:
+  - Locks the socket and calls a function to read the packet.
+  - Depending on the packet type:
+    - **DATA packets**: Stored in the receive buffer (with duplicate and window checks).
+    - **ACK packets**: Used to update the send window.
+  - Sends any pending ACKs or buffer state notifications if needed.
+
+##### Termination
+- When signaled to stop:
+  - Prints final traffic statistics.
+  - Exits.
+
+
+#### S_thread (Sender Thread)
+
+##### Initialization
+- Sets up counters to track packets sent, retransmissions, and flow control events.
+
+##### Main Loop
+- Iterates over every socket:
+  - Tries to lock the socket; if unavailable, it skips.
+  - Checks if the socket is allocated and bound.
+  - Gets the current timestamp for timeout checks.
+
+##### Reliability and Flow Control
+- For each socket:
+  - Checks for packets in the send window that have timed out.
+    - If timed out: retransmits all unacknowledged packets (Go-back-N style).
+  - Verifies if the window is full and notes flow control restrictions.
+
+##### Packet Transmission
+- Sends new packets from the send buffer (if allowed by the send window):
+  - Prepares message packets with appropriate headers (sequence number, ACK, receiver window).
+  - Updates window tracking: base, next sequence number, and count of unacknowledged packets.
+
+##### Adaptive Sleeping
+- Adjusts sleep duration based on socket activity to balance throughput.
+
+##### Termination
+- When signaled:
+  - Prints final transmission statistics.
+  - Exits.
+
+#### G_thread (Garbage Collector Thread)
+
+##### Initialization
+- Sets scan parameters:
+  - Base interval
+  - Jitter
+  - Max sockets to reclaim per cycle
+
+##### Main Loop
+- Periodically scans the list of sockets:
+  - Iterates (in reverse) over the sockets.
+  - Attempts to lock each socket.
+  - Identifies orphaned sockets (whose owning process is no longer active).
+
+##### Reclaiming Orphaned Sockets
+- For each orphaned/abandoned socket:
+  - Resets allocation state and network buffers.
+  - Resets protocol state (send/receive window pointers, etc.).
+  - Logs the reclamation event.
+- Limits the number of sockets reclaimed per scan cycle to prevent overload.
+
+##### Adaptive Sleep
+- Adjusts the sleep interval between scans with jitter.
+- Shortens the interval if sockets were reclaimed during the scan.
+
+##### Termination
+- On termination signal:
+  - Logs a summary of the number of scans and reclaimed sockets.
+  - Exits.
+
+
+> These threads work in tandem to ensure robust and efficient socket management:
+> - **R_thread**: Reliably receives and processes incoming packets.
+> - **S_thread**: Manages the sending, retransmission, and flow control of outgoing data.
+> - **G_thread**: Monitors and cleans up orphaned sockets, ensuring efficient resource utilization.
+
+---
 
 ## 8. PROTOCOL OPERATION DETAILS
 
@@ -337,7 +433,7 @@ EINVAL, EBADF, ETIMEDOUT
 
 This protocol provides reliable, in-order message delivery despite network unreliability, enabling effective communication between distributed processes.
 
-
+---
 
 ## 9. PACKET TRANSMISSION STATISTICS
 
@@ -357,6 +453,8 @@ This protocol provides reliable, in-order message delivery despite network unrel
 
 > File size: 105334B ≃ 102KB
 > Note: One additional packet was send for metadata
+
+---
 
 ## 10. KTP PROTOCOL ARCHITECTURE OVERVIEW
 
@@ -382,6 +480,8 @@ This protocol provides reliable, in-order message delivery despite network unrel
 │  └──────────┘  └──────────┘  └──────────────┘ │
 └───────────────────────────────────────────────┘
 ```
+
+---
 
 ## 11. Running the KTP Protocol  
 
